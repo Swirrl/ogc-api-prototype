@@ -1,0 +1,39 @@
+{:ogc-api.concerns.reitit/router
+ {:data
+  [["/"
+    {:get {:handler #ig/ref :ogc-api.handler/index}}]
+
+   ["/collections"
+    {:get {:handler #ig/ref :ogc-api.handlers.collections/index}}]
+
+   ["/collections/:collection-id"
+    {:get {:handler #ig/ref :ogc-api.handlers.collections/collection}}]
+
+   ["/collections/:collection-id/items"
+    {:get
+     {:handler #ig/ref :ogc-api.handlers.features/index
+      :parameters {:query [:map
+                           [:bbox
+                            {:optional true
+                             :decode/string #ig/ref :ogc-api.util.params/bbox}
+                            [:tuple :double :double :double :double]]
+                           [:point
+                            {:optional true
+                             :decode/string #ig/ref :ogc-api.util.params/point}
+                            [:tuple :double :double]]]}}}]
+
+   ["/collections/:collection-id/items/:feature-id"
+    {:get {:handler #ig/ref :ogc-api.handlers.features/item
+           :parameters {:path [:map
+                               [:feature-id #ig/ref :ogc-api.util.params/pos-int?]]}}}]]}
+ :ogc-api.util.params/bbox {}
+ :ogc-api.util.params/point {}
+ :ogc-api.util.params/pos-int? {}
+
+ :ogc-api.handler/index {}
+ :ogc-api.handlers.collections/index {:repo #ig/ref :grafter.db/triplestore
+                                                :base-uri #ig/ref :ogc-api/base-uri}
+ :ogc-api.handlers.collections/collection {:repo #ig/ref :grafter.db/triplestore
+                                                     :base-uri #ig/ref :ogc-api/base-uri}
+ :ogc-api.handlers.features/index {:repo #ig/ref :grafter.db/triplestore}
+ :ogc-api.handlers.features/item {:repo #ig/ref :grafter.db/triplestore}}

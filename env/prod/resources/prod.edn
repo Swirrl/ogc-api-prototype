@@ -1,0 +1,2 @@
+{:ogc-api/query-endpoint "http://localhost:7820/defra-ogc/query"
+ }

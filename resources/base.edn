@@ -1,0 +1,10 @@
+{:ogc-api.concerns/jetty {:opts {:port 8080 :join? false}
+                                    :handler #ig/ref :ogc-api.concerns.reitit/ring-handler}
+
+ :grafter.db/triplestore {:query-endpoint #ig/ref :ogc-api/query-endpoint}
+
+ :ogc-api.concerns.reitit/ring-handler {:router #ig/ref :ogc-api.concerns.reitit/router
+                                                  :default-handler #ig/ref :ogc-api.concerns.reitit/default-handler
+                                                  :opts {}}
+
+ :ogc-api.concerns.reitit/default-handler {}}

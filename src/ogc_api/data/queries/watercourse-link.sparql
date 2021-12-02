@@ -1,0 +1,30 @@
+PREFIX wn: <http://environment.data.gov.uk/ogc/def/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+CONSTRUCT {
+  ?feature_uri ?p ?o .
+  ?geo ?gp ?go .
+  ?start wn:upstreamLink ?upstream .
+  ?end wn:downstreamLink ?downstream .
+}
+WHERE {
+#  ?feature_uri is passed in
+  {
+    ?feature_uri a wn:WatercourseLink ;
+                 geo:hasGeometry ?geo ;
+                 wn:startNode ?start ;
+                 wn:endNode ?end ;
+                 ?p ?o .
+    ?geo ?gp ?go .
+  }
+  UNION {
+#    the start node may be a terminus and not have any further upstream watercourses
+    ?feature_uri wn:startNode ?start .
+    ?start wn:upstreamLink ?upstream .
+  }
+  UNION {
+#    the end node may be a terminus and not have any further downstream watercourses
+    ?feature_uri wn:endNode ?end .
+    ?end wn:downstreamLink ?downstream .
+  }
+}

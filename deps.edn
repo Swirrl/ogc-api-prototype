@@ -1,0 +1,56 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.2"}
+        ring/ring-jetty-adapter {:mvn/version "1.8.2"}
+        ring/ring-core {:mvn/version "1.8.2"}
+        metosin/reitit {:mvn/version "0.5.10"}
+        meta-merge/meta-merge {:mvn/version  "1.0.0"}
+        integrant/integrant {:mvn/version "0.8.0"}
+
+        org.clojure/tools.logging {:mvn/version "1.1.0"}
+        org.apache.logging.log4j/log4j-api {:mvn/version "2.11.1"} ; Import log4j2 as the logging backend
+        org.apache.logging.log4j/log4j-core {:mvn/version "2.11.1"} ; Import log4j2 as the logging backend
+        org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.11.1"} ; Redirect all SLF4J logs over the log4j2 backend
+        selmer/selmer {:mvn/version "1.12.44"}
+        org.clojure/data.json {:mvn/version "2.4.0"}
+
+        ; org.apache.jena/jena-arq {:mvn/version "4.2.0"}
+        ; org.apache.jena/jena-core {:mvn/version "4.2.0"}
+        ; org.apache.jena/jena-tdb {:mvn/version "4.2.0"}
+        ; org.apache.jena/jena-iri {:mvn/version "4.2.0"}
+        ; org.apache.jena/jena-querybuilder {:mvn/version "4.2.0"}
+        ; org.apache.jena/jena-fuseki-geosparql {:mvn/version "4.2.0"}
+        ; org.apache.jena/jena-geosparql {:mvn/version "4.2.0"}
+
+        grafter.db/grafter.db {:mvn/version "0.8.8"}
+        grafter/vocabularies {:mvn/version "0.3.8"}
+        grafter/matcha.alpha {:mvn/version "0.1.12"}
+
+        factual/geo {:mvn/version "3.0.1"}}
+
+ :mvn/repos {"swirrl-jars-releases" {:url "s3://swirrl-jars/releases/"}
+             "swirrl-jars-snapshots" {:url "s3://swirrl-jars/snapshots/"}}
+
+ :aliases
+ {:dev {:extra-paths ["env/dev/src" "env/dev/resources"
+                      "env/test/resources" "test"]
+        :extra-deps {integrant/repl {:mvn/version "0.3.1"}
+                     vvvvalvalval/scope-capture {:mvn/version "0.3.2"}
+                     ring/ring-mock {:mvn/version "0.4.0"}}}
+
+  :test {:extra-deps {com.cognitect/test-runner
+                      {:git/url "https://github.com/cognitect-labs/test-runner"
+                       :sha "b6b3193fcc42659d7e46ecd1884a228993441182"}}
+         :extra-paths ["test"]
+         :main-opts ["-m" "cognitect.test-runner"
+                     "-d" "test"]}
+
+  ; :geosparql-fuseki-server
+  ; {:extra-deps {org.apache.jena/jena-fuseki-geosparql {:mvn/version "4.2.0"}}
+
+  :uberjar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.193"}}
+            :exec-fn hf.depstar/uberjar
+            :exec-args {:aot true
+                        :jar "water-network-api.main.jar"
+                        :main-class "water-network-api.main"
+                        :sync-pom true}}}}
+

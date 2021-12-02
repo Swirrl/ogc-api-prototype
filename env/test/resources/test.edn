@@ -1,0 +1,10 @@
+{:ogc-api.concerns/jetty {:opts {:port 3001}}
+ :ogc-api/query-endpoint "http://localhost:5820/ogc-test/query"
+ :ogc-api/base-uri "http://localhost:3001"
+
+ :ogc-api.concerns.reitit/router
+ {:data
+  [["/test-error-route"
+    {:get {:handler #ig/ref :ogc-api.test.util/throw-error}}]]}
+
+  :ogc-api.test.util/throw-error {}}

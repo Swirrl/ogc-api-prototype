@@ -1,0 +1,7 @@
+CONSTRUCT { ?s ?p ?o }
+WHERE {
+# TODO - paging support
+  ?s a ?collection_uri ;
+     ?p ?o . }
+OFFSET 0
+LIMIT 100

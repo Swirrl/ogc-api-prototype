@@ -1,0 +1,19 @@
+PREFIX wn: <http://environment.data.gov.uk/ogc/def/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX sr: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+
+CONSTRUCT {
+# keep data returned VERY simple at this point, i.e no optional up/downstream links.
+    ?id sr:easting ?easting ;
+        sr:northing ?northing ;
+}
+WHERE {
+    ?id sr:easting ?easting ;
+        sr:northing ?northing ;
+
+    FILTER(?easting > {{min_x}} && ?easting < {{max_x}})
+    FILTER(?northing > {{min_y}} && ?northing < {{max_y}})
+}
+# TODO support paging
+OFFSET 0
+LIMIT 100

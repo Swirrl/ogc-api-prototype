@@ -1,0 +1,20 @@
+PREFIX wn: <http://environment.data.gov.uk/ogc/def/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX unit: <http://qudt.org/vocab/unit#>
+PREFIX sr: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+
+CONSTRUCT {
+    ?hydro a wn:HydroNode ;
+           ?p ?o ;
+           geo:hasGeometry ?geom .
+    ?geom geo:asWKT ?hydro_wkt .
+}
+WHERE {
+    # For performance reasons we must supply at least one 4 figure OS grid reference to limit the amount of data that the geosparql functions are performed on
+    # Up to 4 squares are supplied (depending on proximity of point to the edge of a square)
+    VALUES ?gridrefs { UNDEF }
+    ?hydro wn:inOsGridRef ?gridrefs ;
+           ?p ?o .
+    ?hydro geo:hasGeometry ?geom .
+    ?geom geo:asWKT ?hydro_wkt .
+}
