@@ -1,0 +1,21 @@
+
+PREFIX spatial: <http://jena.apache.org/spatial#>
+PREFIX spatialF: <http://jena.apache.org/function/spatial#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+
+#select ?feature_uri
+construct {
+    ?feature_uri # ?p ?o ;
+                 geo:hasGeometry ?geom .
+}
+where {
+    ?feature_uri # a ?ty ;
+                 ?p ?o ;
+                 {% if filter_bbox %}
+                 # spatial:intersectBox (?bbox_lat1 ?bbox_lon1 ?bbox_lat2 ?bbox_lon2 ?bbox_limit) ;
+                 spatial:intersectBox ({{bbox_lat1}} {{bbox_lon1}} {{bbox_lat2}} {{bbox_lon2}} {{bbox_limit}}) ;
+                 {% endif %}
+                 geo:hasGeometry ?geom .
+}
+

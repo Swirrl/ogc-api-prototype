@@ -13,7 +13,7 @@ Clojure, and JDK11 for Jena.
 Get [jena-fuseki-geosparql-4.0.2.jar](https://repo1.maven.org/maven2/org/apache/jena/jena-fuseki-geosparql/4.2.0/)
 and pick a `$DATAPATH` to store the data.
 ```
-java -jar ./jena-fuseki-geosparql-4.2.0.jar -t $DATAPATH -t2
+java -jar ./jena-fuseki-geosparql-4.2.0.jar -t $DATAPATH -t2 -i
 ```
 
 Import some data.

@@ -39,18 +39,20 @@
     (when result
       (nearest-to-point/rdf->response result collection-uri point))))
 
-(defn- handle-items-request [repo request]
-  (let [collection-uri (params/collection-uri request)]
-  (when-let [items (data/fetch-all-items repo collection-uri)]
-    (-> items multi-feature-resp/rdf->feature-collection rr/response))))
+(defn- validate-params [request]
+  ; combine with more params in here
+  (let [v (if (params/bbox request) (validate/bbox request) {:valid? true :limit 10})]
+    v))
+
+(defn- handle-items-request [{:keys [repo]} request]
+  (let [collection-uri (params/collection-uri request)
+        params (validate-params request)]
+    (if (:valid? params)
+      (->> (data/fetch-collection-items repo collection-uri params)
+           ; (multi-feature-resp/rdf->feature-collection repo)
+           (rr/response))
+      (ru/error-response 400 (:message params)))))
 
 (defmethod ig/init-key :ogc-api.handlers.features/index [_ opts]
-  (fn [request]
-    (let [response (cond
-                     (params/bbox request) (handle-bbox-request opts request)
-                     (params/point request) (handle-point-request opts request)
-                     ; :else (handle-items-request opts request)
-                     )]
-      (or response
-          (ru/error-response 404 "No features found near point")))))
+  (fn [request] (handle-items-request opts request)))
 

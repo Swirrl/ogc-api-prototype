@@ -17,10 +17,9 @@
                             {:optional true
                              :decode/string #ig/ref :ogc-api.util.params/bbox}
                             [:tuple :double :double :double :double]]
-                           [:point
-                            {:optional true
-                             :decode/string #ig/ref :ogc-api.util.params/point}
-                            [:tuple :double :double]]]}}}]
+                           [:limit
+                            {:optional true}
+                            #ig/ref :ogc-api.util.params/pos-int?]]}}}]
 
    ["/collections/:collection-id/items/:feature-id"
     {:get {:handler #ig/ref :ogc-api.handlers.features/item
@@ -37,3 +36,4 @@
                                                      :base-uri #ig/ref :ogc-api/base-uri}
  :ogc-api.handlers.features/index {:repo #ig/ref :grafter.db/triplestore}
  :ogc-api.handlers.features/item {:repo #ig/ref :grafter.db/triplestore}}
+

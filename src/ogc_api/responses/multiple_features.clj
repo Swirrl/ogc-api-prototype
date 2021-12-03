@@ -32,9 +32,7 @@
        (build-properties collection-uri)
        (map geojson/feature)))
 
-(defn rdf->feature-collection [db bbox collection-uri]
+(defn rdf->feature-collection [db collection-uri]
   (rr/response
    (geojson/feature-collection
-    {:bbox bbox
-     :features
-     (build-features db collection-uri)})))
+    {:features (build-features db collection-uri)})))

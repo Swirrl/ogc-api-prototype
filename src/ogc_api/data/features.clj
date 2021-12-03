@@ -12,6 +12,12 @@
    [ogc-api.util.misc :as mu]
    [ogc-api.util.queries :as qu]))
 
+; (def kilometres http://www.opengis.net/def/uom/OGC/1.0/kilometre)
+
+(defquery fetch-near-point
+  "ogc_api/data/queries/jena-nearest-point.sparql"
+  [:ty :lat :lon :dist :limit])
+
 (defquery
   fetch-near-items*
   "ogc_api/data/queries/features-nearest-to-point.sparql"
@@ -25,13 +31,14 @@
                 db))
 
 (defn- compute-distance [point {:keys [wkt] :as feature}]
+  (prn [:compute-distance point feature])
   (let [p1 (conv/wkt-literal->geo-lib-point wkt)
         p2 (apply spatial/point point)]
     (assoc feature
            :distance-from-point
            (mu/round 1 (spatial/distance p1 p2)))))
 
-(defn fetch-nearest-item-to-point [repo collection-uri point]
+(defn fetch-nearest-item-to-point-old [repo collection-uri point]
   (when-let [grid-refs (gr/gridref-uris point)]
     (let [db (fetch-near-items* repo {:gridrefs grid-refs})]
       (when (seq db)
@@ -42,6 +49,14 @@
           (-> nearest-item
               (dissoc :wkt)
               (assoc :db db)))))))
+
+(defn fetch-nearest-item-to-point [repo collection-uri point]
+  (let [db (fetch-near-point repo {:ty collection-uri
+                                   :lat (point 0) :lon (point 1)
+                                   :dist 1000000
+                                   :limit 2})]
+    (prn (first db))
+    (first db)))
 
 (defquery
   fetch-features-by-id*
@@ -62,6 +77,19 @@
   [repo bbox]
   (let [ids (get-ids-in-bbox repo bbox)]
     (fetch-features-by-id* repo {:feature-uris ids})))
+
+(defn fetch-collection-items
+  [repo collection-uri {:keys [bbox limit]}]
+  (prn limit)
+  (qu/execute-selmer-query
+    repo
+    "ogc_api/data/queries/collection-items.selmer.sparql"
+    ; {:filter_bbox (some? bbox)}
+    (cond-> {}
+      (some? bbox) (assoc :bbox_lat1 (bbox 0) :bbox_lon1 (bbox 1)
+                          :bbox_lat2 (bbox 2) :bbox_lon2 (bbox 3)
+                          :filter_bbox true)
+      (and (some? bbox) (some? limit)) (assoc :bbox_limit limit)) {}))
 
 (defquery
   fetch-all-items*
