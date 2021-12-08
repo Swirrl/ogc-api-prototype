@@ -1,6 +1,7 @@
 (ns ogc-api.data.features
   (:require
    [geo.spatial :as spatial]
+   [grafter-2.rdf4j.sparql :as sparql]
    [grafter.db.triplestore.query :refer [defquery]]
    [grafter.matcha.alpha :as mc]
    [grafter.vocabularies.geosparql :refer [geosparql:asWKT
@@ -78,27 +79,38 @@
   (let [ids (get-ids-in-bbox repo bbox)]
     (fetch-features-by-id* repo {:feature-uris ids})))
 
-(defn fetch-collection-items
-  [repo collection-uri {:keys [bbox limit]}]
-  (prn limit)
-  (qu/execute-selmer-query
-    repo
-    "ogc_api/data/queries/collection-items.selmer.sparql"
-    ; {:filter_bbox (some? bbox)}
-    (cond-> {}
-      (some? bbox) (assoc :bbox_lat1 (bbox 0) :bbox_lon1 (bbox 1)
-                          :bbox_lat2 (bbox 2) :bbox_lon2 (bbox 3)
-                          :filter_bbox true)
-      (and (some? bbox) (some? limit)) (assoc :bbox_limit limit)) {}))
-
 (defquery
   fetch-all-items*
   "ogc_api/data/queries/collection-items.sparql"
   [:collection-uri])
 
+(defn fetch-collection-items-selmer
+  [repo collection-uri {:keys [bbox limit offset]}]
+  (qu/execute-selmer-query
+    repo
+    "ogc_api/data/queries/collection-items.selmer.sparql"
+    ; {:filter_bbox (some? bbox)}
+    (cond->
+      {:collection_uri collection-uri}
+      (some? bbox) (assoc :bbox_lat1 (bbox 0) :bbox_lon1 (bbox 1)
+                          :bbox_lat2 (bbox 2) :bbox_lon2 (bbox 3)
+                          :filter_bbox true)
+      (some? offset) (assoc :offset offset)
+      (some? limit) (assoc :limit limit)
+      (and (some? bbox) (some? limit)) (assoc :bbox_limit limit))))
+
+(defn fetch-collection-items
+  [repo collection-uri {:keys [bbox limit offset]}]
+  (prn [:fetch-collection-items collection-uri])
+  (fetch-all-items*
+    repo
+    (cond-> {:collection-uri collection-uri}
+      (some? offset) (assoc ::sparql/offsets {0 offset})
+      (some? limit) (assoc ::sparql/limits {10 limit}))))
+
 (defn fetch-all-items [repo collection-uri]
   (prn [:fetch-all-items repo collection-uri])
-  (->> (fetch-all-items* repo {:collection-uri collection-uri})
+  (->> (fetch-all-items* repo {:ty collection-uri})
        (mc/build ?s {?p ?o} [[?s ?p ?o]])))
 
 (defquery fetch-watercourse-link*

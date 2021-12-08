@@ -10,49 +10,45 @@
    [ring.util.response :as rr]
    [ogc-api.util.params :as params]))
 
-(defmethod ig/init-key :ogc-api.handlers.features/item [_ {:keys [repo]}]
+(defn- validate-params [request]
+  (let [bbox (if (params/bbox request)
+               (validate/bbox request) {:valid? true})
+        offset (params/offset request)
+        limit (params/limit request)]
+    [(:valid? bbox)
+     (merge bbox {:limit limit :offset offset})]))
+
+(defn collection-item-data [item]
+  {:id (:notation item)
+   :type "Feature"
+   :geometry "???"
+   :properties "???"
+   "?raw" item})
+
+(defn collection-items [repo collection-uri params]
+  (map collection-item-data
+    (data/fetch-collection-items repo collection-uri params)))
+
+(defn- handle-items-request [{:keys [repo collections]} request]
+  (let [collection-uri (:uri (collections (params/collection-id request)))
+        [valid params] (validate-params request)]
+    (if valid
+      (let [features (collection-items repo collection-uri params)]
+        (rr/response
+          {:type "FeatureCollection"
+           :features features
+           :numberReturned (count features)}))
+      (ru/error-response 400 (:message params)))))
+
+(defmethod ig/init-key :ogc-api.handlers.features/index [_ opts]
+  (fn [request] (handle-items-request opts request)))
+
+(defmethod ig/init-key :ogc-api.handlers.features/item [_ {:keys [repo collections]}]
   (fn [request]
-    (let [collection-uri (params/collection-uri request)
+    (let [collection-uri (:uri (collections (params/collection-id request)))
           feature-uri (params/feature-uri request)
           item (data/fetch-item repo {:collection-uri collection-uri :feature-uri feature-uri})]
       (if item
         (single-feature-resp/rdf->response item collection-uri feature-uri)
         (ru/error-response 404 "Feature not found")))))
-
-(defn- items-in-bbox-response [repo request]
-  (let [collection-uri (params/collection-uri request)
-        bbox (params/bbox request)
-        db (data/fetch-items-within-bbox repo bbox)]
-    (when (seq db)
-      (multi-feature-resp/rdf->feature-collection db bbox collection-uri))))
-
-(defn- handle-bbox-request [{:keys [repo]} request]
-  (let [{:keys [valid?] :as result} (validate/bbox request)]
-    (if valid?
-      (items-in-bbox-response repo request)
-      (ru/error-response 422 (:message result)))))
-
-(defn- handle-point-request [{:keys [repo]} request]
-  (let [collection-uri (params/collection-uri request)
-        point (params/point request)
-        result (data/fetch-nearest-item-to-point repo collection-uri point)]
-    (when result
-      (nearest-to-point/rdf->response result collection-uri point))))
-
-(defn- validate-params [request]
-  ; combine with more params in here
-  (let [v (if (params/bbox request) (validate/bbox request) {:valid? true :limit 10})]
-    v))
-
-(defn- handle-items-request [{:keys [repo]} request]
-  (let [collection-uri (params/collection-uri request)
-        params (validate-params request)]
-    (if (:valid? params)
-      (->> (data/fetch-collection-items repo collection-uri params)
-           ; (multi-feature-resp/rdf->feature-collection repo)
-           (rr/response))
-      (ru/error-response 400 (:message params)))))
-
-(defmethod ig/init-key :ogc-api.handlers.features/index [_ opts]
-  (fn [request] (handle-items-request opts request)))
 
