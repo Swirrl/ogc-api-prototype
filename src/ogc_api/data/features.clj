@@ -2,6 +2,7 @@
   (:require
    [geo.spatial :as spatial]
    [grafter-2.rdf4j.sparql :as sparql]
+   [grafter-2.rdf4j.repository :as repo]
    [grafter.db.triplestore.query :refer [defquery]]
    [grafter.matcha.alpha :as mc]
    [grafter.vocabularies.geosparql :refer [geosparql:asWKT
@@ -100,13 +101,16 @@
       (and (some? bbox) (some? limit)) (assoc :bbox_limit limit))))
 
 (defn fetch-collection-items
-  [repo collection-uri {:keys [bbox limit offset]}]
+  [query-path repo collection-uri {:keys [bbox limit offset]}]
   (prn [:fetch-collection-items collection-uri])
-  (fetch-all-items*
-    repo
-    (cond-> {:collection-uri collection-uri}
-      (some? offset) (assoc ::sparql/offsets {0 offset})
-      (some? limit) (assoc ::sparql/limits {10 limit}))))
+  (with-open [conn (repo/->connection repo)]
+    (into []
+      (sparql/query
+        query-path
+        (cond-> {:collection-uri (java.net.URI. collection-uri)}
+          (some? offset) (assoc ::sparql/offsets {0 offset})
+          (some? limit) (assoc ::sparql/limits {10 limit}))
+        conn))))
 
 (defn fetch-all-items [repo collection-uri]
   (prn [:fetch-all-items repo collection-uri])

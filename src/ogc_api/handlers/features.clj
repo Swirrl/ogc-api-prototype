@@ -25,15 +25,17 @@
    :properties "???"
    "?raw" item})
 
-(defn collection-items [repo collection-uri params]
+(defn collection-items [query-path repo collection-uri params]
   (map collection-item-data
-    (data/fetch-collection-items repo collection-uri params)))
+    (data/fetch-collection-items query-path repo collection-uri params)))
 
 (defn- handle-items-request [{:keys [repo collections]} request]
-  (let [collection-uri (:uri (collections (params/collection-id request)))
+  (let [collection (collections (params/collection-id request))
+        collection-uri (:uri collection)
+        query-path (:query collection)
         [valid params] (validate-params request)]
     (if valid
-      (let [features (collection-items repo collection-uri params)]
+      (let [features (collection-items query-path repo collection-uri params)]
         (rr/response
           {:type "FeatureCollection"
            :features features

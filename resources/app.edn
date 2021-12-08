@@ -36,10 +36,23 @@
  :ogc-api.data.collections/collections
  {"WaterBody" {:id "WaterBody"
                :uri "http://environment.data.gov.uk/catchment-planning/def/water-framework-directive/WaterBody"
-               :title "A body of water"}
-  "Feature" {:id "Feature"
-             :uri "http://www.opengis.net/ont/geosparql#Feature"
-             :title "OGC Feature"}}
+               :title "A body of water"
+               :query "ogc_api/data/queries/collection-items.sparql"}
+  "Embankment" {:id "Embankment"
+                :uri "http://environment.data.gov.uk/asset-management/def/core/Asset"
+                :title "Defence assets"
+               :query "ogc_api/data/queries/collection-items.sparql"}
+  "BiosysSite" {:id "BiosysSite"
+                :uri "http://environment.data.gov.uk/ecology/biosys/def/Site"
+                :title "Biosys Site"
+               :query "ogc_api/data/queries/collection-items.sparql"}
+  "LocalAuthority" {:id "LocalAuthority"
+                    :uri "http://statistics.data.gov.uk/def/statistical-geography#Statistical-Geography"
+                    :title "Local Authority"
+               :query "ogc_api/data/queries/collection-items.sparql"}}
+  ; "Feature" {:id "Feature"
+  ;            :uri "http://www.opengis.net/ont/geosparql#Feature"
+  ;            :title "OGC Feature"}
 
  :ogc-api.handlers.info/index {}
  :ogc-api.handlers.collections/index {:repo #ig/ref :grafter.db/triplestore

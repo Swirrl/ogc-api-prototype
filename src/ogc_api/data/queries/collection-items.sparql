@@ -7,8 +7,7 @@ PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
 
 select ?uri ?notation ?geom ?wktgeom
 where {
-    bind (uri(?collection_uri) as ?collection_uri_uri) .
-    ?uri a ?collection_uri_uri ;
+    ?uri a ?collection_uri ;
          geo:hasGeometry ?geom .
         # skos:notation ?notation ;
                  # ?p ?o ;

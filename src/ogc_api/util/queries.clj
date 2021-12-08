@@ -6,3 +6,4 @@
   (let [query-str (selmer/render-file filename selmer-context)]
     (with-open [conn (repo/->connection repo)]
       (into [] (apply repo/query conn query-str opts)))))
+
