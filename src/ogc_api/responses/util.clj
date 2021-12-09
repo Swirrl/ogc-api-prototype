@@ -1,5 +1,6 @@
 (ns ogc-api.responses.util
   (:require
+    [clojure.string :as str]
    [clojure.data.json :as json]
    [ogc-api.data.util.conversions :as conv]))
 
@@ -17,10 +18,12 @@
    :title "Placeholder license"
    :type "text/html"})
 
-(defn self-link [base-uri request]
-  {:href (str base-uri (:uri request))
-   :rel "self"
+(defn link [rel & path]
+  {:href (str/join "/" path)
+   :rel rel
    :type "application/json"})
+
+(defn self-link [& path] (apply link "self" path))
 
 (defn add-license-link-to-response [partial-resp]
   (update-in partial-resp [:links] conj license-link))

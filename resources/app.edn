@@ -63,8 +63,10 @@
                                            :base-uri #ig/ref :ogc-api/base-uri}
  :ogc-api.handlers.features/index {:repo #ig/ref :grafter.db/triplestore
                                            :collections #ig/ref :ogc-api.data.collections/collections
+                                      :base-uri #ig/ref :ogc-api/base-uri
                                    }
  :ogc-api.handlers.features/item {:repo #ig/ref :grafter.db/triplestore
                                            :collections #ig/ref :ogc-api.data.collections/collections
+                                      :base-uri #ig/ref :ogc-api/base-uri
                                   }}
 

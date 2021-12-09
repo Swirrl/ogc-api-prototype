@@ -5,11 +5,11 @@ PREFIX spatialF: <http://jena.apache.org/function/spatial#>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
 
-select ?uri ?notation ?geom ?wktgeom
+select ?uri (?notation as ?id) (str(?wktgeom) as ?geometry)
 where {
     ?uri a ?collection_uri ;
+         skos:notation ?notation ;
          geo:hasGeometry ?geom .
-        # skos:notation ?notation ;
                  # ?p ?o ;
                  # spatial:intersectBox ({{bbox_lat1}} {{bbox_lon1}} {{bbox_lat2}} {{bbox_lon2}} {{bbox_limit}}) ;
 
