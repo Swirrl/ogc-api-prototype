@@ -3,6 +3,7 @@
    [clojure.edn :as edn]
    [clojure.string :as str]
    [integrant.core :as ig]
+   [ogc-api.data.collections :as collections]
    [ogc-api.data.util.vocabs :as vocabs]))
 
 (defn collection-id [request]
@@ -11,8 +12,7 @@
 (defn feature-id [request]
   (-> request :path-params :feature-id))
 
-(defn collection-uri [request]
-  (vocabs/wn (collection-id request)))
+(defn collection-uri [request] (collections/name->uri (collection-id request)))
 
 (defn feature-uri [request]
   (vocabs/wnid (str (str/lower-case (collection-id request))
@@ -24,6 +24,12 @@
 
 (defn bbox [request]
   (-> request :parameters :query :bbox))
+
+(defn limit [request]
+  (-> request :parameters :query :limit))
+
+(defn offset [request]
+  (-> request :parameters :query :offset))
 
 (defn split-string-of-numbers-param [param]
   (->> (str/split param #",")
@@ -38,4 +44,8 @@
   split-string-of-numbers-param)
 
 (defmethod ig/init-key :ogc-api.util.params/pos-int? [_ _]
-  pos-int?)
+  nat-int?)
+
+(defmethod ig/init-key :ogc-api.util.params/feature-id? [_ _]
+  string?)
+

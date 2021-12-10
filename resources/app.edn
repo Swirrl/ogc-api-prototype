@@ -1,7 +1,7 @@
 {:ogc-api.concerns.reitit/router
  {:data
   [["/"
-    {:get {:handler #ig/ref :ogc-api.handler/index}}]
+    {:get {:handler #ig/ref :ogc-api.handlers.info/index}}]
 
    ["/collections"
     {:get {:handler #ig/ref :ogc-api.handlers.collections/index}}]
@@ -17,23 +17,56 @@
                             {:optional true
                              :decode/string #ig/ref :ogc-api.util.params/bbox}
                             [:tuple :double :double :double :double]]
-                           [:point
-                            {:optional true
-                             :decode/string #ig/ref :ogc-api.util.params/point}
-                            [:tuple :double :double]]]}}}]
+                           [:offset
+                            {:optional true}
+                            #ig/ref :ogc-api.util.params/pos-int?]
+                           [:limit
+                            {:optional true}
+                            #ig/ref :ogc-api.util.params/pos-int?]]}}}]
 
    ["/collections/:collection-id/items/:feature-id"
     {:get {:handler #ig/ref :ogc-api.handlers.features/item
            :parameters {:path [:map
-                               [:feature-id #ig/ref :ogc-api.util.params/pos-int?]]}}}]]}
+                               [:feature-id #ig/ref :ogc-api.util.params/feature-id?]]}}}]]}
  :ogc-api.util.params/bbox {}
  :ogc-api.util.params/point {}
  :ogc-api.util.params/pos-int? {}
+ :ogc-api.util.params/feature-id? {}
 
- :ogc-api.handler/index {}
+ :ogc-api.data.collections/collections
+ {"WaterBody" {:id "WaterBody"
+               :uri "http://environment.data.gov.uk/catchment-planning/def/water-framework-directive/WaterBody"
+               :title "A body of water"
+               :query "ogc_api/data/queries/collection-items.sparql"}
+  "Embankment" {:id "Embankment"
+                :uri "http://environment.data.gov.uk/asset-management/def/core/Asset"
+                :title "Defence assets"
+               :query "ogc_api/data/queries/collection-items.sparql"}
+  "BiosysSite" {:id "BiosysSite"
+                :uri "http://environment.data.gov.uk/ecology/biosys/def/Site"
+                :title "Biosys Site"
+               :query "ogc_api/data/queries/collection-items.sparql"}
+  "LocalAuthority" {:id "LocalAuthority"
+                    :uri "http://statistics.data.gov.uk/def/statistical-geography#Statistical-Geography"
+                    :title "Local Authority"
+               :query "ogc_api/data/queries/collection-items.sparql"}}
+  ; "Feature" {:id "Feature"
+  ;            :uri "http://www.opengis.net/ont/geosparql#Feature"
+  ;            :title "OGC Feature"}
+
+ :ogc-api.handlers.info/index {}
  :ogc-api.handlers.collections/index {:repo #ig/ref :grafter.db/triplestore
-                                                :base-uri #ig/ref :ogc-api/base-uri}
+                                      :collections #ig/ref :ogc-api.data.collections/collections
+                                      :base-uri #ig/ref :ogc-api/base-uri}
  :ogc-api.handlers.collections/collection {:repo #ig/ref :grafter.db/triplestore
-                                                     :base-uri #ig/ref :ogc-api/base-uri}
- :ogc-api.handlers.features/index {:repo #ig/ref :grafter.db/triplestore}
- :ogc-api.handlers.features/item {:repo #ig/ref :grafter.db/triplestore}}
+                                           :collections #ig/ref :ogc-api.data.collections/collections
+                                           :base-uri #ig/ref :ogc-api/base-uri}
+ :ogc-api.handlers.features/index {:repo #ig/ref :grafter.db/triplestore
+                                           :collections #ig/ref :ogc-api.data.collections/collections
+                                      :base-uri #ig/ref :ogc-api/base-uri
+                                   }
+ :ogc-api.handlers.features/item {:repo #ig/ref :grafter.db/triplestore
+                                           :collections #ig/ref :ogc-api.data.collections/collections
+                                      :base-uri #ig/ref :ogc-api/base-uri
+                                  }}
+

@@ -8,7 +8,7 @@
  :ogc-api.concerns/jetty {:opts {:port 3000}}
 
  ;:ogc-api/query-endpoint "http://localhost:5820/ogc-test/query"
- :ogc-api/query-endpoint "http://localhost:5820/query"
+ :ogc-api/query-endpoint "http://localhost:3030/ds"
 
  :ogc-api/base-uri "http://localhost:3000"
  }

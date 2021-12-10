@@ -6,15 +6,27 @@
    [ogc-api.responses.collections :as collections-resp]
    [ogc-api.util.params :as params]))
 
+(defn collection-data [base-uri collection]
+  {:id (:id collection)
+   :title (:title collection)
+   :links [(ru/self-link base-uri "collections" (:id collection))
+           (ru/link "items" base-uri "collections" (:id collection) "items")]})
+
+(defn handle-collection-list-request [{:keys [base-uri repo collections]} request]
+  (prn [:handle-collection-list-request collections])
+  (rr/response
+    {:collections (map (partial collection-data base-uri) (vals collections))
+     :links [(ru/self-link base-uri "collections") ru/license-link]}))
+
+(defn handle-collection-request [{:keys [base-uri repo collections]} request]
+  (if-let [collection (collections (params/collection-id request))]
+    (rr/response (collection-data base-uri collection))
+    (ru/error-response 404 "Collection not found")))
+
 (defmethod ig/init-key :ogc-api.handlers.collections/index [_ opts]
-  (fn [_]
-    (rr/response (collections-resp/get-collections-metadata opts))))
+  (fn [request]
+    (handle-collection-list-request opts request)))
 
 (defmethod ig/init-key :ogc-api.handlers.collections/collection [_ opts]
-  (fn [request]
-    (let [collection-uri (params/collection-uri request)
-          res (collections-resp/get-single-collection-metadata collection-uri opts)]
-      (if res
-        (rr/response res)
-        (ru/error-response 404 "Collection not found")))))
+  (fn [request] (handle-collection-request opts request)))
 

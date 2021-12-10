@@ -1,7 +1,20 @@
-CONSTRUCT { ?s ?p ?o }
-WHERE {
-# TODO - paging support
-  ?s a ?collection_uri ;
-     ?p ?o . }
-OFFSET 0
-LIMIT 100
+
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX spatial: <http://jena.apache.org/spatial#>
+PREFIX spatialF: <http://jena.apache.org/function/spatial#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+
+select ?uri (?notation as ?id) (str(?wktgeom) as ?geometry)
+where {
+    ?uri a ?collection_uri ;
+         skos:notation ?notation ;
+         geo:hasGeometry ?geom .
+                 # ?p ?o ;
+                 # spatial:intersectBox ({{bbox_lat1}} {{bbox_lon1}} {{bbox_lat2}} {{bbox_lon2}} {{bbox_limit}}) ;
+
+    ?geom geo:asWKT ?wktgeom .
+}
+offset 0
+limit 10
+
