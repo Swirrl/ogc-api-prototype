@@ -14,52 +14,6 @@
    [ogc-api.util.misc :as mu]
    [ogc-api.util.queries :as qu]))
 
-; (def kilometres http://www.opengis.net/def/uom/OGC/1.0/kilometre)
-
-(defquery fetch-near-point
-  "ogc_api/data/queries/jena-nearest-point.sparql"
-  [:ty :lat :lon :dist :limit])
-
-(defquery
-  fetch-near-items*
-  "ogc_api/data/queries/features-nearest-to-point.sparql"
-  [:gridrefs])
-
-(defn- construct-features [collection-uri db]
-  (mc/construct {:id ?id :wkt ?wkt}
-                [[?id rdf:a collection-uri]
-                 [?id geosparql:hasGeometry ?geometry]
-                 [?geometry geosparql:asWKT ?wkt]]
-                db))
-
-(defn- compute-distance [point {:keys [wkt] :as feature}]
-  (prn [:compute-distance point feature])
-  (let [p1 (conv/wkt-literal->geo-lib-point wkt)
-        p2 (apply spatial/point point)]
-    (assoc feature
-           :distance-from-point
-           (mu/round 1 (spatial/distance p1 p2)))))
-
-(defn fetch-nearest-item-to-point-old [repo collection-uri point]
-  (when-let [grid-refs (gr/gridref-uris point)]
-    (let [db (fetch-near-items* repo {:gridrefs grid-refs})]
-      (when (seq db)
-        (let [nearest-item (->> db
-                                (construct-features collection-uri)
-                                (map (partial compute-distance point))
-                                (apply min-key :distance-from-point))]
-          (-> nearest-item
-              (dissoc :wkt)
-              (assoc :db db)))))))
-
-(defn fetch-nearest-item-to-point [repo collection-uri point]
-  (let [db (fetch-near-point repo {:ty collection-uri
-                                   :lat (point 0) :lon (point 1)
-                                   :dist 1000000
-                                   :limit 2})]
-    (prn (first db))
-    (first db)))
-
 (defquery
   fetch-features-by-id*
   "ogc_api/data/queries/features-by-id.sparql"
