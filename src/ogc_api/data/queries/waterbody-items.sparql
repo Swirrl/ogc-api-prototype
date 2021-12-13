@@ -5,22 +5,26 @@ PREFIX spatial: <http://jena.apache.org/spatial#>
 PREFIX spatialF: <http://jena.apache.org/function/spatial#>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX water: <http://environment.data.gov.uk/catchment-planning/def/water-framework-directive/>
 
 select
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
     ?datetime
+    ?catchment
 where {
     ?uri a ?collection_uri ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .
 
-                 # spatial:intersectBox ({{bbox_lat1}} {{bbox_lon1}} {{bbox_lat2}} {{bbox_lon2}} {{bbox_limit}}) ;
+    optional { ?uri water:inOperationalCatchment ?catchment . }
 
     ?geom geo:asWKT ?wktgeom .
+
 }
 offset 0
 limit 10
+
 

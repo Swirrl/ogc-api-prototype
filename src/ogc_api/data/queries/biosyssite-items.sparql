@@ -5,21 +5,27 @@ PREFIX spatial: <http://jena.apache.org/spatial#>
 PREFIX spatialF: <http://jena.apache.org/function/spatial#>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX biosys: <http://environment.data.gov.uk/ecology/biosys/def/>
 
 select
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
     ?datetime
+    ?waterbody
 where {
     ?uri a ?collection_uri ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .
 
-                 # spatial:intersectBox ({{bbox_lat1}} {{bbox_lon1}} {{bbox_lat2}} {{bbox_lon2}} {{bbox_limit}}) ;
+    optional {
+        ?uri biosys:wfdWaterbodyId ?waterbody_id .
+        ?waterbody_id skos:notation ?waterbody .
+    }
 
     ?geom geo:asWKT ?wktgeom .
+
 }
 offset 0
 limit 10
