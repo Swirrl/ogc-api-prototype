@@ -7,6 +7,10 @@
 
 # Implementing the OGC API Features with RDF and Geosparql
 
+Description of technology used and technical approach
+
+Geosparql queries
+
 
 
 
@@ -38,6 +42,16 @@ Each monitoring site has a point geometry.
 [Download](https://swirrl-ogc-api-test-data.s3.eu-west-2.amazonaws.com/local-authorities.nt.gz)
 
 
-# Making links
+# Linked Data and the OGC API Features
 
+Making links - examples of why it's useful.  Use cases based on the selected test data
+
+Options for technical approaches to those links
+
+Relationship between API URLs and the identifiers for features
+
+Role of JSON-LD
+
+
+# Example application
 
