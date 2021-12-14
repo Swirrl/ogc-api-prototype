@@ -37,6 +37,10 @@
     first
     collection-item-data))
 
+(defn collection-item-links
+  [base-uri collection-id feature-id]
+  [(ru/self-link base-uri "collections" collection-id "items" feature-id)])
+
 (defn collection-links [base-uri {:keys [offset limit]} collection items]
   (keep identity
     [(ru/self-link base-uri "collections" (:id collection) "items")
@@ -54,7 +58,8 @@
         (let [features (collection-items query-path repo collection-uri params)]
           (rr/response
             {:type "FeatureCollection"
-             :features features
+             :features
+             (map #(assoc % :links (collection-item-links base-uri (:id collection) (:id %))) features)
              :numberReturned (count features)
              :links (collection-links base-uri params collection features)}))
         (ru/error-response 400 (:message params))))
@@ -71,6 +76,7 @@
        feature-id (params/feature-id request)
        query-path (:query collection)]
       (if-let [feature (collection-item query-path repo collection-uri feature-id)]
-        (rr/response feature)
+        (rr/response
+             (assoc feature :links (collection-item-links base-uri (:id collection) (:id feature))))
         (ru/error-response 404 "Feature not found"))))))
 
