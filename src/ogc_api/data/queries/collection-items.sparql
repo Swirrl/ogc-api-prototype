@@ -12,7 +12,7 @@ select
     ?title
     ?datetime
 where {
-    ?uri a ?collection_uri ;
+    ?uri a ?collection ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .

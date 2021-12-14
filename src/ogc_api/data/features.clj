@@ -55,16 +55,16 @@
       (and (some? bbox) (some? limit)) (assoc :bbox_limit limit))))
 
 (defn fetch-collection-items
-  [query-path repo collection-uri {:keys [bbox limit offset]}]
-  (prn [:fetch-collection-items collection-uri])
+  [query-path repo collection-uri {:keys [bbox limit offset feature-id]}]
   (with-open [conn (repo/->connection repo)]
     (into []
-      (sparql/query
-        query-path
-        (cond-> {:collection-uri (java.net.URI. collection-uri)}
-          (some? offset) (assoc ::sparql/offsets {0 offset})
-          (some? limit) (assoc ::sparql/limits {10 limit}))
-        conn))))
+          (sparql/query
+            query-path
+            (cond-> {:collection (java.net.URI. collection-uri)}
+              (some? feature-id) (assoc :id feature-id)
+              (some? offset) (assoc ::sparql/offsets {0 offset})
+              (some? limit) (assoc ::sparql/limits {10 limit}))
+            conn))))
 
 (defn fetch-all-items [repo collection-uri]
   (prn [:fetch-all-items repo collection-uri])
@@ -90,3 +90,4 @@
   (fetch-hydronode* repo opts))
 
 (defmethod fetch-item :default [_ _] nil)
+

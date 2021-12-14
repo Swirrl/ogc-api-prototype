@@ -30,6 +30,13 @@
   (map collection-item-data
     (data/fetch-collection-items query-path repo collection-uri params)))
 
+(defn collection-item [query-path repo collection-uri feature-id]
+  (some->
+    (data/fetch-collection-items query-path repo collection-uri
+                                 {:feature-id feature-id})
+    first
+    collection-item-data))
+
 (defn collection-links [base-uri {:keys [offset limit]} collection items]
   (keep identity
     [(ru/self-link base-uri "collections" (:id collection) "items")
@@ -38,7 +45,6 @@
                 (str "items?offset=" (+ (or offset 0) limit) "&limit=" limit)))]))
 
 (defn- handle-items-request [{:keys [base-uri repo collections]} request]
-  (prn base-uri)
   (if-let [collection (collections (params/collection-id request))]
     (let
       [collection-uri (:uri collection)
@@ -57,12 +63,14 @@
 (defmethod ig/init-key :ogc-api.handlers.features/index [_ opts]
   (fn [request] (handle-items-request opts request)))
 
-(defmethod ig/init-key :ogc-api.handlers.features/item [_ {:keys [repo collections]}]
+(defmethod ig/init-key :ogc-api.handlers.features/item [_ {:keys [base-uri repo collections]}]
   (fn [request]
-    (let [collection-uri (:uri (collections (params/collection-id request)))
-          feature-uri (params/feature-uri request)
-          item (data/fetch-item repo {:collection-uri collection-uri :feature-uri feature-uri})]
-      (if item
-        (single-feature-resp/rdf->response item collection-uri feature-uri)
-        (ru/error-response 404 "Feature not found")))))
+  (if-let [collection (collections (params/collection-id request))]
+    (let
+      [collection-uri (:uri collection)
+       feature-id (params/feature-id request)
+       query-path (:query collection)]
+      (if-let [feature (collection-item query-path repo collection-uri feature-id)]
+        (rr/response feature)
+        (ru/error-response 404 "Feature not found"))))))
 

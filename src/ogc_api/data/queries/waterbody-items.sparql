@@ -11,10 +11,10 @@ select
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
-    ?datetime
+    # ?datetime
     ?catchment
 where {
-    ?uri a ?collection_uri ;
+    ?uri a ?collection ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .
