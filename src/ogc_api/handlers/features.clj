@@ -20,12 +20,11 @@
     [(:valid? bbox)
      (merge bbox {:limit limit :offset offset})]))
 
-(defn collection-item-data [item]
-  {:id (:id item)
+(defn collection-item-data [{:keys [id geometry] :as item}]
+  {:id id
    :type "Feature"
-   :geometry (json/read-str (gio/to-geojson (gio/read-wkt (:geometry item))))
-   :properties "???"
-   "?raw" item})
+   :geometry (-> geometry gio/read-wkt gio/to-geojson json/read-str)
+   :properties (dissoc item :id :geometry)})
 
 (defn collection-items [query-path repo collection-uri params]
   (map collection-item-data
