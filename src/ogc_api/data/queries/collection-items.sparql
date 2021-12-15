@@ -17,7 +17,8 @@ where {
          rdf:label ?title ;
          geo:hasGeometry ?geom .
 
-                 # spatial:intersectBox ({{bbox_lat1}} {{bbox_lon1}} {{bbox_lat2}} {{bbox_lon2}} {{bbox_limit}}) ;
+    bind (exists { ?uri spatial:intersectBox (?bbox_lat1 ?bbox_lon1 ?bbox_lat2 ?bbox_lon2) } as ?is_in_box) .
+    filter(if(?filter_bbox, ?is_in_box, true)) .
 
     ?geom geo:asWKT ?wktgeom .
 }
