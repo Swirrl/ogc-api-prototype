@@ -3,7 +3,6 @@
    [integrant.core :as ig]
    [ring.util.response :as rr]
    [ogc-api.responses.util :as ru]
-   [ogc-api.responses.collections :as collections-resp]
    [ogc-api.util.params :as params]))
 
 (defn collection-data [base-uri collection]

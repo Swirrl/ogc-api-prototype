@@ -3,22 +3,13 @@
    [clojure.edn :as edn]
    [clojure.string :as str]
    [integrant.core :as ig]
-   [java-time :as jt]
-   [ogc-api.data.collections :as collections]
-   [ogc-api.data.util.vocabs :as vocabs]))
+   [java-time :as jt]))
 
 (defn collection-id [request]
   (-> request :path-params :collection-id))
 
 (defn feature-id [request]
   (-> request :path-params :feature-id))
-
-(defn collection-uri [request] (collections/name->uri (collection-id request)))
-
-(defn feature-uri [request]
-  (vocabs/wnid (str (str/lower-case (collection-id request))
-                    "/"
-                    (feature-id request))))
 
 (defn point [request]
   (-> request :parameters :query :point))
