@@ -17,6 +17,10 @@
                             {:optional true
                              :decode/string #ig/ref :ogc-api.util.params/bbox}
                             [:tuple :double :double :double :double]]
+                           [:datetime
+                            {:optional true
+                             :decode/string #ig/ref :ogc-api.util.params/datetime}
+                            [:any]]
                            [:offset
                             {:optional true}
                             #ig/ref :ogc-api.util.params/pos-int?]
@@ -29,6 +33,7 @@
            :parameters {:path [:map
                                [:feature-id #ig/ref :ogc-api.util.params/feature-id?]]}}}]]}
  :ogc-api.util.params/bbox {}
+ :ogc-api.util.params/datetime {}
  :ogc-api.util.params/point {}
  :ogc-api.util.params/pos-int? {}
  :ogc-api.util.params/feature-id? {}
@@ -41,7 +46,7 @@
   "Embankment" {:id "Embankment"
                 :uri "http://environment.data.gov.uk/asset-management/def/core/Asset"
                 :title "Defence assets"
-                :query "ogc_api/data/queries/collection-items.sparql"}
+                :query "ogc_api/data/queries/embankment-items.sparql"}
   "BiosysSite" {:id "BiosysSite"
                 :uri "http://environment.data.gov.uk/ecology/biosys/def/Site"
                 :title "Biosys Site"

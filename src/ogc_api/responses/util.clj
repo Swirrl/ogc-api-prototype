@@ -18,12 +18,15 @@
    :title "Placeholder license"
    :type "text/html"})
 
-(defn link [rel & path]
+(def link-types
+  {:json "application/json"
+   :geojson "application/geo+json"})
+(defn link [path {:keys [type rel query]}]
   {:href (str/join "/" path)
    :rel rel
-   :type "application/json"})
+   :type (or (link-types (or type :json)) type)})
 
-(defn self-link [& path] (apply link "self" path))
+(defn self-link [& path] (link path {:rel :self}))
 
 (defn add-license-link-to-response [partial-resp]
   (update-in partial-resp [:links] conj license-link))

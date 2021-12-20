@@ -5,14 +5,18 @@ PREFIX spatial: <http://jena.apache.org/spatial#>
 PREFIX spatialF: <http://jena.apache.org/function/spatial#>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
-PREFIX biosys: <http://environment.data.gov.uk/ecology/biosys/def/>
+PREFIX asset: <http://environment.data.gov.uk/asset-management/def/core/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 select
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
-    ?waterbody
+    ?datetime
 where {
+    bind(xsd:dateTime(?datetime_from) as ?dt_from) .
+    bind(xsd:dateTime(?datetime_to) as ?dt_to) .
+
     ?uri a ?collection ;
          skos:notation ?id ;
          rdf:label ?title ;
@@ -21,14 +25,14 @@ where {
     bind (exists { ?uri spatial:intersectBox (?bbox_lat1 ?bbox_lon1 ?bbox_lat2 ?bbox_lon2) } as ?is_in_box) .
     filter(if(?filter_bbox, ?is_in_box, true)) .
 
-    optional {
-        ?uri biosys:wfdWaterbodyId ?waterbody_id .
-        ?waterbody_id skos:notation ?waterbody .
-    }
+    optional { ?uri asset:assetStartDate ?date } .
+    bind (xsd:dateTime(?date) as ?datetime) .
+    filter(if(bound(?date) && (?datetime_from != false), ?datetime >= ?dt_from, true)
+        && if(bound(?date) && (?datetime_to != false), ?datetime <= ?dt_to, true)) .
 
     ?geom geo:asWKT ?wktgeom .
-
 }
 offset 0
 limit 10
+
 

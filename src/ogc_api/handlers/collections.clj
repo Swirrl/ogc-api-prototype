@@ -10,10 +10,10 @@
   {:id (:id collection)
    :title (:title collection)
    :links [(ru/self-link base-uri "collections" (:id collection))
-           (ru/link "items" base-uri "collections" (:id collection) "items")]})
+           (ru/link [base-uri "collections" (:id collection) "items"]
+                    {:rel "items"})]})
 
 (defn handle-collection-list-request [{:keys [base-uri repo collections]} request]
-  (prn [:handle-collection-list-request collections])
   (rr/response
     {:collections (map (partial collection-data base-uri) (vals collections))
      :links [(ru/self-link base-uri "collections") ru/license-link]}))

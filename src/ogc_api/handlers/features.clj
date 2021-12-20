@@ -15,10 +15,12 @@
 (defn- validate-params [request]
   (let [bbox (if (params/bbox request)
                (validate/bbox request) {:valid? true})
+        datetime (params/datetime request)
         offset (params/offset request)
         limit (or (params/limit request) 10)]
     [(:valid? bbox)
-     (merge bbox {:limit limit :offset offset})]))
+     (merge bbox {:datetime datetime
+                  :limit limit :offset offset})]))
 
 (defn collection-item-data [{:keys [id geometry] :as item}]
   {:id id
@@ -45,8 +47,10 @@
   (keep identity
     [(ru/self-link base-uri "collections" (:id collection) "items")
      (when (>= (count items) limit)
-       (ru/link "next" base-uri "collections" (:id collection)
-                (str "items?offset=" (+ (or offset 0) limit) "&limit=" limit)))]))
+       (ru/link [base-uri "collections" (:id collection) "items"]
+                {:rel "next"
+                 :query {:offset (+ (or offset 0) limit)
+                         :limit limit}}))]))
 
 (defn- handle-items-request [{:keys [base-uri repo collections]} request]
   (if-let [collection (collections (params/collection-id request))]
