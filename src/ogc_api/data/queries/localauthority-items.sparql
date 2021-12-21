@@ -5,17 +5,43 @@ PREFIX spatial: <http://jena.apache.org/spatial#>
 PREFIX spatialF: <http://jena.apache.org/function/spatial#>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX geography: <http://statistics.data.gov.uk/def/statistical-geography#>
+PREFIX entity: <http://statistics.data.gov.uk/def/statistical-entity#>
+PREFIX boundary: <http://statistics.data.gov.uk/def/boundary-change/>
+PREFIX measurement: <http://statistics.data.gov.uk/def/measurement#>
 
 select
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
-    ?datetime
+
+    ?changeOrderTitle
+    # ?operativeDate
+    ?originatingChangeOrder
+    ?hasExtentOfTheRealmHectarage
+    ?hasInlandWaterHectarage
+    ?hasLandHectarage
+    ?hasMeanHighWaterHectarage
+
 where {
-    ?uri a <http://statistics.data.gov.uk/def/statistical-geography#Statistical-Geography> ;
-         skos:notation ?id ;
-         rdf:label ?title ;
+    ?uri a geography:Statistical-Geography ;
+         rdf:label ?id ;
+         geography:officialname ?title ;
+         # geography:status ?status ; # always "live"
          geo:hasGeometry ?geom .
+
+    optional { ?uri boundary:changeOrderTitle ?changeOrderTitle . }
+    # optional { ?uri boundary:operativedate ?operativeDate . }
+    optional { ?uri boundary:originatingChangeOrder ?originatingChangeOrder . }
+    optional { ?uri measurement:hasExtentOfTheRealmHectarage ?hasExtentOfTheRealmHectarage . }
+    optional { ?uri measurement:hasInlandWaterHectarage ?hasInlandWaterHectarage . }
+    optional { ?uri measurement:hasLandHectarage ?hasLandHectarage . }
+    optional { ?uri measurement:hasMeanHighWaterHectarage ?hasMeanHighWaterHectarage . }
+
+    # optional { ?uri entity:code ?entityCode . }
+    # optional { ?uri entity:owner ?entityOwner . }
+
+    # optional { ?uri geography:parentcode ?parent_id . }
 
     bind (exists { ?uri spatial:intersectBox (?bbox_lat1 ?bbox_lon1 ?bbox_lat2 ?bbox_lon2) } as ?is_in_box) .
     filter(if(?filter_bbox, ?is_in_box, true)) .
