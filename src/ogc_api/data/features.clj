@@ -4,13 +4,12 @@
    [grafter-2.rdf4j.repository :as repo]))
 
 (defn fetch-collection-items
-  [query-path repo collection-uri {:keys [bbox limit offset feature-id datetime]}]
+  [query-path repo {:keys [bbox limit offset feature-id datetime]}]
   (with-open [conn (repo/->connection repo)]
     (into []
           (sparql/query
             query-path
-            (cond-> {:collection (java.net.URI. collection-uri)
-                     :datetime_from (or (:from datetime) (Boolean. false))
+            (cond-> {:datetime_from (or (:from datetime) (Boolean. false))
                      :datetime_to (or (:to datetime) (Boolean. false))
                      :filter_bbox (Boolean. (some? bbox))}
               (some? bbox) (assoc :bbox_lat1 (bbox 0) :bbox_lon1 (bbox 1)

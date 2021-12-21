@@ -17,7 +17,7 @@ where {
     bind(xsd:dateTime(?datetime_from) as ?dt_from) .
     bind(xsd:dateTime(?datetime_to) as ?dt_to) .
 
-    ?uri a ?collection ;
+    ?uri a <http://environment.data.gov.uk/asset-management/def/core/Asset> ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .

@@ -11,7 +11,6 @@
         org.apache.logging.log4j/log4j-core {:mvn/version "2.17.0"}
         ; Redirect all SLF4J logs over the log4j2 backend
         org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.17.0"}
-        selmer/selmer {:mvn/version "1.12.45"}
         org.clojure/data.json {:mvn/version "2.4.0"}
 
         ; org.apache.jena/jena-arq {:mvn/version "4.2.0"}

@@ -14,7 +14,7 @@ select
     # ?datetime
     ?catchment
 where {
-    ?uri a ?collection ;
+    ?uri a water:WaterBody ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .

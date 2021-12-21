@@ -25,14 +25,13 @@
    :geometry (-> geometry gio/read-wkt gio/to-geojson json/read-str)
    :properties (dissoc item :id :geometry)})
 
-(defn collection-items [query-path repo collection-uri params]
+(defn collection-items [query-path repo params]
   (map collection-item-data
-    (data/fetch-collection-items query-path repo collection-uri params)))
+    (data/fetch-collection-items query-path repo params)))
 
-(defn collection-item [query-path repo collection-uri feature-id]
+(defn collection-item [query-path repo feature-id]
   (some->
-    (data/fetch-collection-items query-path repo collection-uri
-                                 {:feature-id feature-id})
+    (data/fetch-collection-items query-path repo {:feature-id feature-id})
     first
     collection-item-data))
 
@@ -52,11 +51,10 @@
 (defn- handle-items-request [{:keys [base-uri repo collections]} request]
   (if-let [collection (collections (params/collection-id request))]
     (let
-      [collection-uri (:uri collection)
-       query-path (:query collection)
+      [query-path (:query collection)
        [valid params] (validate-params request)]
       (if valid
-        (let [features (collection-items query-path repo collection-uri params)]
+        (let [features (collection-items query-path repo params)]
           (rr/response
             {:type "FeatureCollection"
              :features
@@ -73,10 +71,9 @@
   (fn [request]
   (if-let [collection (collections (params/collection-id request))]
     (let
-      [collection-uri (:uri collection)
-       feature-id (params/feature-id request)
+      [feature-id (params/feature-id request)
        query-path (:query collection)]
-      (if-let [feature (collection-item query-path repo collection-uri feature-id)]
+      (if-let [feature (collection-item query-path repo feature-id)]
         (rr/response
              (assoc feature :links (collection-item-links base-uri (:id collection) (:id feature))))
         (ru/error-response 404 "Feature not found"))))))

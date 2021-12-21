@@ -40,21 +40,17 @@
 
  :ogc-api.data.collections/collections
  {"WaterBody" {:id "WaterBody"
-               :uri "http://environment.data.gov.uk/catchment-planning/def/water-framework-directive/WaterBody"
                :title "A body of water"
                :query "ogc_api/data/queries/waterbody-items.sparql"}
   "Embankment" {:id "Embankment"
-                :uri "http://environment.data.gov.uk/asset-management/def/core/Asset"
                 :title "Defence assets"
                 :query "ogc_api/data/queries/embankment-items.sparql"}
   "BiosysSite" {:id "BiosysSite"
-                :uri "http://environment.data.gov.uk/ecology/biosys/def/Site"
                 :title "Biosys Site"
                 :query "ogc_api/data/queries/biosyssite-items.sparql"}
   "LocalAuthority" {:id "LocalAuthority"
-                    :uri "http://statistics.data.gov.uk/def/statistical-geography#Statistical-Geography"
                     :title "Local Authority"
-                    :query "ogc_api/data/queries/collection-items.sparql"}}
+                    :query "ogc_api/data/queries/localauthority-items.sparql"}}
   ; "Feature" {:id "Feature"
   ;            :uri "http://www.opengis.net/ont/geosparql#Feature"
   ;            :title "OGC Feature"}
