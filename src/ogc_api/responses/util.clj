@@ -22,7 +22,10 @@
   {:json "application/json"
    :geojson "application/geo+json"})
 (defn link [path {:keys [type rel query]}]
-  {:href (str/join "/" path)
+  {:href
+   (let [base (str/join "/" path)]
+     (if (empty? query) base
+       (str base "?" (str/join "&" (map (fn [[k v]] (str k "=" v)) query)))))
    :rel rel
    :type (or (link-types (or type :json)) type)})
 

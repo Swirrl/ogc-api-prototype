@@ -40,13 +40,14 @@
   [(ru/self-link base-uri "collections" collection-id "items" feature-id)])
 
 (defn collection-links [base-uri {:keys [offset limit]} collection items]
-  (keep identity
-    [(ru/self-link base-uri "collections" (:id collection) "items")
-     (when (>= (count items) limit)
-       (ru/link [base-uri "collections" (:id collection) "items"]
-                {:rel "next"
-                 :query {:offset (+ (or offset 0) limit)
-                         :limit limit}}))]))
+  (let [limit (or limit 10)]
+    (keep identity
+          [(ru/self-link base-uri "collections" (:id collection) "items")
+           (when (>= (count items) limit)
+             (ru/link [base-uri "collections" (:id collection) "items"]
+                      {:rel "next"
+                       :query {"offset" (+ (or offset 0) limit)
+                               "limit" limit}}))])))
 
 (defn- handle-items-request [{:keys [base-uri repo collections]} request]
   (if-let [collection (collections (params/collection-id request))]
