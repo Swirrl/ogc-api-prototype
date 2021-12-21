@@ -22,6 +22,7 @@ select
     ?hasInlandWaterHectarage
     ?hasLandHectarage
     ?hasMeanHighWaterHectarage
+    ?parent_id
 
 where {
     ?uri a geography:Statistical-Geography ;
@@ -41,7 +42,10 @@ where {
     # optional { ?uri entity:code ?entityCode . }
     # optional { ?uri entity:owner ?entityOwner . }
 
-    # optional { ?uri geography:parentcode ?parent_id . }
+    optional {
+        ?uri geography:parentcode ?parentcode .
+        ?parentcode rdf:label ?parent_id .
+    }
 
     bind (exists { ?uri spatial:intersectBox (?bbox_lat1 ?bbox_lon1 ?bbox_lat2 ?bbox_lon2) } as ?is_in_box) .
     filter(if(?filter_bbox, ?is_in_box, true)) .

@@ -3,6 +3,12 @@
   [["/"
     {:get {:handler #ig/ref :ogc-api.handlers.info/index}}]
 
+   ["/schema"
+    {:get {:handler #ig/ref :ogc-api.handlers.info/schema}}]
+
+   ["/conformance"
+    {:get {:handler #ig/ref :ogc-api.handlers.info/conformance}}]
+
    ["/collections"
     {:get {:handler #ig/ref :ogc-api.handlers.collections/index}}]
 
@@ -55,7 +61,9 @@
   ;            :uri "http://www.opengis.net/ont/geosparql#Feature"
   ;            :title "OGC Feature"}
 
- :ogc-api.handlers.info/index {}
+ :ogc-api.handlers.info/index {:base-uri #ig/ref :ogc-api/base-uri}
+ :ogc-api.handlers.info/schema {}
+ :ogc-api.handlers.info/conformance {}
  :ogc-api.handlers.collections/index {:repo #ig/ref :grafter.db/triplestore
                                       :collections #ig/ref :ogc-api.data.collections/collections
                                       :base-uri #ig/ref :ogc-api/base-uri}
