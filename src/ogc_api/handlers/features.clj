@@ -25,25 +25,38 @@
    :geometry (-> geometry gio/read-wkt gio/to-geojson json/read-str)
    :properties (dissoc item :id :geometry)})
 
-(defn collection-items [query-path repo params]
-  (map collection-item-data
-    (data/fetch-collection-items query-path repo params)))
-
-(defn collection-item [query-path repo feature-id]
-  (some->
-    (data/fetch-collection-items query-path repo {:feature-id feature-id})
-    first
-    collection-item-data))
-
 (defn collection-item-links
-  [base-uri collection-id feature-id]
-  [(ru/self-link base-uri "collections" collection-id "items" feature-id)])
+  [base-uri property-links collection-id item]
+  (concat
+    (keep identity
+          (map
+            (fn [[field {:keys [collection]}]]
+              (if-let [ref-id (-> item :properties field)]
+                (ru/link [base-uri "collections" collection "items" ref-id]
+                         {:rel (name field)})))
+            property-links))
+    [(ru/self-link base-uri "collections" collection-id "items" (:id item))]))
 
-(defn collection-links [base-uri {:keys [offset limit]} collection items]
+(defn collection-item
+  [base-uri collection-id property-links exclude-properties item]
+  (let [item (collection-item-data item)]
+    (assoc item
+           :properties (apply dissoc (:properties item) exclude-properties)
+           :links
+           (collection-item-links base-uri property-links collection-id item))))
+
+(defn fetch-collection-items [query-path repo params]
+  (data/fetch-collection-items query-path repo params))
+
+(defn fetch-collection-item [query-path repo feature-id]
+  (first
+    (data/fetch-collection-items query-path repo {:feature-id feature-id})))
+
+(defn collection-links [base-uri {:keys [offset limit]} collection item-count]
   (let [limit (or limit 10)]
     (keep identity
           [(ru/self-link base-uri "collections" (:id collection) "items")
-           (when (>= (count items) limit)
+           (when (>= item-count limit)
              (ru/link [base-uri "collections" (:id collection) "items"]
                       {:rel "next"
                        :query {"offset" (+ (or offset 0) limit)
@@ -52,16 +65,15 @@
 (defn- handle-items-request [{:keys [base-uri repo collections]} request]
   (if-let [collection (collections (params/collection-id request))]
     (let
-      [query-path (:query collection)
+      [{:keys [query property-links exclude-properties]} collection
        [valid params] (validate-params request)]
       (if valid
-        (let [features (collection-items query-path repo params)]
+        (let [features (fetch-collection-items query repo params)]
           (rr/response
             {:type "FeatureCollection"
-             :features
-             (map #(assoc % :links (collection-item-links base-uri (:id collection) (:id %))) features)
+             :features (map #(collection-item base-uri (:id collection) property-links exclude-properties %) features)
              :numberReturned (count features)
-             :links (collection-links base-uri params collection features)}))
+             :links (collection-links base-uri params collection (count features))}))
         (ru/error-response 400 (:message params))))
     (ru/error-response 404 "Collection not found")))
 
@@ -72,10 +84,10 @@
   (fn [request]
   (if-let [collection (collections (params/collection-id request))]
     (let
-      [feature-id (params/feature-id request)
-       query-path (:query collection)]
-      (if-let [feature (collection-item query-path repo feature-id)]
+      [{:keys [query property-links exclude-properties]} collection
+       feature-id (params/feature-id request)]
+      (if-let [feature (fetch-collection-item query repo feature-id)]
         (rr/response
-             (assoc feature :links (collection-item-links base-uri (:id collection) (:id feature))))
+          (collection-item base-uri (:id collection) property-links exclude-properties feature))
         (ru/error-response 404 "Feature not found"))))))
 

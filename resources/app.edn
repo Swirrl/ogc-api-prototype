@@ -53,6 +53,8 @@
                 :query "ogc_api/data/queries/embankment-items.sparql"}
   "BiosysSite" {:id "BiosysSite"
                 :title "Biosys Site"
+                :exclude-properties [:waterbody]
+                :property-links {:waterbody {:collection "WaterBody"}}
                 :query "ogc_api/data/queries/biosyssite-items.sparql"}
   "LocalAuthority" {:id "LocalAuthority"
                     :title "Local Authority"

@@ -13,7 +13,7 @@ select
     ?title
     ?waterbody
 where {
-    ?uri a <http://environment.data.gov.uk/ecology/biosys/def/Site> ;
+    ?uri a biosys:Site ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .
