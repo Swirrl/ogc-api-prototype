@@ -36,7 +36,10 @@
                          {:type :geojson :rel (name field)})))
             property-links))
     [(ru/link [base-uri "collections" collection-id "items" (:id item)]
-              {:type :geojson :rel "self"})]))
+              {:type :geojson :rel "self"})
+     (ru/link [base-uri "collections" collection-id]
+              {:type :geojson :rel "collection"})]))
+
 
 (defn collection-item
   [base-uri collection-id property-links exclude-properties item]
