@@ -1,8 +1,9 @@
 (ns ogc-api.responses.util
   (:require
     [clojure.string :as str]
-   [clojure.data.json :as json]
-   [ogc-api.data.util.conversions :as conv]))
+    [clojure.data.json :as json]
+    [ring.util.response :as rr]
+    [ogc-api.data.util.conversions :as conv]))
 
 (defn error-response [status message]
   {:status status
@@ -18,19 +19,24 @@
    :title "Placeholder license"
    :type "text/html"})
 
-(def link-types
+(def data-types
   {:json "application/json"
    :geojson "application/geo+json"})
+
 (defn link [path {:keys [type rel query]}]
   {:href
    (let [base (str/join "/" path)]
      (if (empty? query) base
        (str base "?" (str/join "&" (map (fn [[k v]] (str k "=" v)) query)))))
    :rel rel
-   :type (or (link-types (or type :json)) type)})
+   :type (or (data-types (or type :json)) type)})
 
 (defn self-link [& path] (link path {:rel :self}))
 
 (defn add-license-link-to-response [partial-resp]
   (update-in partial-resp [:links] conj license-link))
 
+(defn geojson [body]
+  {:status 200
+   :headers {"Content-Type" (:geojson data-types)}
+   :body (json/write-str body)})

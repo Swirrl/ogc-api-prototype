@@ -33,7 +33,7 @@
             (fn [[field {:keys [collection]}]]
               (if-let [ref-id (-> item :properties field)]
                 (ru/link [base-uri "collections" collection "items" ref-id]
-                         {:rel (name field)})))
+                         {:type :geojson :rel (name field)})))
             property-links))
     [(ru/self-link base-uri "collections" collection-id "items" (:id item))]))
 
@@ -58,7 +58,7 @@
           [(ru/self-link base-uri "collections" (:id collection) "items")
            (when (>= item-count limit)
              (ru/link [base-uri "collections" (:id collection) "items"]
-                      {:rel "next"
+                      {:type :geojson :rel "next"
                        :query {"offset" (+ (or offset 0) limit)
                                "limit" limit}}))])))
 
@@ -69,7 +69,7 @@
        [valid params] (validate-params request)]
       (if valid
         (let [features (fetch-collection-items query repo params)]
-          (rr/response
+          (ru/geojson
             {:type "FeatureCollection"
              :features (map #(collection-item base-uri (:id collection) property-links exclude-properties %) features)
              :numberReturned (count features)
@@ -87,7 +87,7 @@
       [{:keys [query property-links exclude-properties]} collection
        feature-id (params/feature-id request)]
       (if-let [feature (fetch-collection-item query repo feature-id)]
-        (rr/response
+        (ru/geojson
           (collection-item base-uri (:id collection) property-links exclude-properties feature))
         (ru/error-response 404 "Feature not found"))))))
 
