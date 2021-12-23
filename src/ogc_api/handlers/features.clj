@@ -35,7 +35,8 @@
                 (ru/link [base-uri "collections" collection "items" ref-id]
                          {:type :geojson :rel (name field)})))
             property-links))
-    [(ru/self-link base-uri "collections" collection-id "items" (:id item))]))
+    [(ru/link [base-uri "collections" collection-id "items" (:id item)]
+              {:type :geojson :rel "self"})]))
 
 (defn collection-item
   [base-uri collection-id property-links exclude-properties item]
@@ -55,7 +56,8 @@
 (defn collection-links [base-uri {:keys [offset limit]} collection item-count]
   (let [limit (or limit 10)]
     (keep identity
-          [(ru/self-link base-uri "collections" (:id collection) "items")
+          [(ru/link [base-uri "collections" (:id collection) "items"]
+                    {:type :geojson :rel "self"})
            (when (>= item-count limit)
              (ru/link [base-uri "collections" (:id collection) "items"]
                       {:type :geojson :rel "next"

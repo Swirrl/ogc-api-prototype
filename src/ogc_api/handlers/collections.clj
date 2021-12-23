@@ -8,14 +8,15 @@
 (defn collection-data [base-uri collection]
   {:id (:id collection)
    :title (:title collection)
-   :links [(ru/self-link base-uri "collections" (:id collection))
+   :links [(ru/link [base-uri "collections" (:id collection)]
+                    {:type :geojson :rel "self"})
            (ru/link [base-uri "collections" (:id collection) "items"]
                     {:type :geojson :rel "items"})]})
 
 (defn handle-collection-list-request [{:keys [base-uri repo collections]} request]
   (ru/geojson
     {:collections (map (partial collection-data base-uri) (vals collections))
-     :links [(ru/self-link base-uri "collections") ru/license-link]}))
+     :links [(ru/link [base-uri "collections"] {:rel "self"}) ru/license-link]}))
 
 (defn handle-collection-request [{:keys [base-uri repo collections]} request]
   (if-let [collection (collections (params/collection-id request))]

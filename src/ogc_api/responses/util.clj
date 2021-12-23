@@ -31,8 +31,6 @@
    :rel rel
    :type (or (data-types (or type :json)) type)})
 
-(defn self-link [& path] (link path {:rel :self}))
-
 (defn add-license-link-to-response [partial-resp]
   (update-in partial-resp [:links] conj license-link))
 

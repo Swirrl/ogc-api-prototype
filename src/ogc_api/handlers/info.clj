@@ -8,7 +8,7 @@
   (fn [request]
     (rr/response
       {:links
-       [(ru/self-link base-uri)
+       [(ru/link [base-uri] {:rel "self"})
         (ru/link [base-uri "schema"]
                  {:rel "service-desc"
                   :title "The OpenAPI schema"
@@ -37,9 +37,9 @@
       {:conformsTo
        [
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
-        "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html"
+        ; "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"
+        ; "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30"
+        ; "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html"
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
         ]})))
 
