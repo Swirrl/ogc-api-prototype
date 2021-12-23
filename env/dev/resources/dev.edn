@@ -2,8 +2,9 @@
  :dev/http-print-request-diffs {}
 
  ;:ogc-api.concerns.reitit/router {:opts {}}
- :ogc-api.concerns.reitit/router {:opts {:exception #ig/ref :dev/http-pretty-exception
-                                                    :reitit.middleware/transform #ig/ref :dev/http-print-request-diffs}}
+ :ogc-api.concerns.reitit/router {:opts {}}
+ ; {:exception #ig/ref :dev/http-pretty-exception
+ ;                                                    :reitit.middleware/transform #ig/ref :dev/http-print-request-diffs}}
 
  :ogc-api.concerns/jetty {:opts {:port 3000}}
 

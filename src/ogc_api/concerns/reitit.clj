@@ -4,6 +4,7 @@
    [integrant.core :as ig]
    [meta-merge.core :as mm]
    [muuntaja.core :as m]
+   [ring.middleware.content-type :as content-type]
    [reitit.coercion :as rc]
    [reitit.coercion.malli :as mc]
    [reitit.ring :as ring]
@@ -42,6 +43,7 @@
                      {:data {:coercion mc/coercion
                              :muuntaja m/instance
                              :middleware [parameters/parameters-middleware ;; query-params & form-params
+                                          content-type/wrap-content-type
                                           muuntaja/format-negotiate-middleware ;; content-negotiation
                                           muuntaja/format-response-middleware ;; encoding response body
                                           ; exception-middleware ;; exception handling

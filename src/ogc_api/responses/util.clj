@@ -35,6 +35,5 @@
   (update-in partial-resp [:links] conj license-link))
 
 (defn geojson [body]
-  {:status 200
-   :headers {"Content-Type" (:geojson data-types)}
-   :body (json/write-str body)})
+  (rr/response body))
+
