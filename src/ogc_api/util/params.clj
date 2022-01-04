@@ -1,9 +1,8 @@
 (ns ogc-api.util.params
   (:require
-   [clojure.edn :as edn]
-   [clojure.string :as str]
-   [integrant.core :as ig]
-   [java-time :as jt]))
+    [clojure.string :as str]
+    [integrant.core :as ig]
+    [java-time :as jt]))
 
 (defn collection-id [request]
   (-> request :path-params :collection-id))
@@ -28,8 +27,7 @@
 
 (defn split-string-of-numbers-param [param]
   (->> (str/split param #",")
-       (map edn/read-string)
-       (map double)
+       (map #(Double/parseDouble %))
        (into [])))
 
 (defn- parse-date [s]
