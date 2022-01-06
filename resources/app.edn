@@ -3,6 +3,8 @@
   [["/"
     {:get {:handler #ig/ref :ogc-api.handlers.info/index}}]
 
+   ["/demo/*" {:get {:handler #ig/ref :ogc-api.concerns.reitit/file-handler}}]
+
    ["/schema"
     {:get {:handler #ig/ref :ogc-api.handlers.info/schema}}]
 
@@ -43,6 +45,8 @@
  :ogc-api.util.params/point {}
  :ogc-api.util.params/pos-int? {}
  :ogc-api.util.params/feature-id? {}
+
+ :ogc-api.concerns.reitit/file-handler {:root "demo"}
 
  :ogc-api.data.collections/collections
  {"WaterBody" {:id "WaterBody"

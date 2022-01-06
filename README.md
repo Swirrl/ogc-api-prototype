@@ -30,6 +30,10 @@ This is a work in progress.
 Run it with `clj -A:dev` and enter `(dev) (go)` to run the service.
 It listens on port 3000 by default: http://localhost:3000/collections
 
+## Demo page
+
+A demo map will be served at http://localhost:3000/demo/map.html
+
 ## License
 
 Copyright © 2021 Swirrl IT Ltd.

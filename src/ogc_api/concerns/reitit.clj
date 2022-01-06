@@ -61,3 +61,7 @@
     {:not-found (constantly (ru/error-response 404 "Page not found"))
      :method-not-allowed (constantly (ru/error-response 405 "Method not allowed"))
      :not-acceptable (constantly (ru/error-response 406 "Request not acceptable"))})))
+
+(defmethod ig/init-key ::file-handler [_ opts]
+  (ring/create-file-handler opts))
+
