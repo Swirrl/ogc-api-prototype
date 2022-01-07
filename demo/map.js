@@ -75,11 +75,26 @@ async function reload() {
         layers[l] = L.geoJSON(data, {
             style: () => collections[l].style,
             onEachFeature: (f, layer) => {
+                // hacky popup generation
                 var popup = `<p><b>${f.properties.title}</b></p>`;
                 for (let link of f.links.map(linkHtml)) {
                     if (link) {
                         popup += `<p>${link}</p>`;
                     }
+                }
+                const props = Object.keys(f.properties).filter(k=> k != 'title');
+                if (props.length > 0) {
+                    popup += '<table>';
+                    for (let k of props) {
+                        popup += `<tr><td>${k}</td>`;
+                        const v = f.properties[k];
+                        if (typeof(v) == 'string' && v.startsWith('http')) {
+                            popup += `<td><a href="${v}">Link</a></td></tr>`;
+                        } else {
+                            popup += `<td>${v}</td></tr>`;
+                        }
+                    }
+                    popup += '</table>';
                 }
                 layer.bindPopup(popup);
             },
