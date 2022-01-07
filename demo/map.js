@@ -96,6 +96,10 @@ async function reload() {
                     }
                     popup += '</table>';
                 }
+                const apiself = f.links.find(l => l.rel == 'self');
+                if (apiself) {
+                    popup += `<div style='text-align: right'><a target=_blank href="${apiself.href}">API link</a></div>`
+                }
                 layer.bindPopup(popup);
             },
         });
