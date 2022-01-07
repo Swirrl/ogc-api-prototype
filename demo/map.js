@@ -86,12 +86,11 @@ async function reload() {
                 if (props.length > 0) {
                     popup += '<table>';
                     for (let k of props) {
-                        popup += `<tr><td>${k}</td>`;
                         const v = f.properties[k];
                         if (typeof(v) == 'string' && v.startsWith('http')) {
-                            popup += `<td><a href="${v}">Link</a></td></tr>`;
+                            popup += `<tr><td><a target=_blank href="${v}">${k}</a></td></tr>`;
                         } else {
-                            popup += `<td>${v}</td></tr>`;
+                            popup += `<tr><td>${k}</td><td>${v}</td></tr>`;
                         }
                     }
                     popup += '</table>';
