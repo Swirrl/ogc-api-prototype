@@ -36,5 +36,8 @@
                       "env/test/resources" "test"]
         :extra-deps {integrant/repl {:mvn/version "0.3.2"}
                      vvvvalvalval/scope-capture {:mvn/version "0.3.2"}
-                     }}}}
+                     }}
+  :build {:deps {io.github.seancorfield/build-clj
+                 {:git/tag "v0.6.7" :git/sha "22c2d09"}}
+          :ns-default build}}}
 

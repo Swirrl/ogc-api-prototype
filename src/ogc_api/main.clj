@@ -1,4 +1,5 @@
 (ns ogc-api.main
+  (:gen-class)
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [integrant.core :as ig]
@@ -40,3 +41,4 @@
                    core-profiles)]
     (println "Starting profiles " profiles)
     (exec-config profiles)))
+
