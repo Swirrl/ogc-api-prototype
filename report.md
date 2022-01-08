@@ -75,12 +75,31 @@ Each monitoring site has a point geometry.
 
 Making links - examples of why it's useful.  Use cases based on the selected test data
 
+Different views of data for different user groups and applications
+
 Options for technical approaches to those links
 
 Relationship between API URLs and the identifiers for features
 
 Role of JSON-LD
 
+# Hosted endpoint
+
+https://geonovum-staging.publishmydata.com/
+
+# Testing and compliance
+
+OGC test suite - which tests still fail?
+
+Using it with Mapbox
+
+Using it with QGIS
+
+
 
 # Example application
+
+https://geonovum-staging.publishmydata.com/demo/map.html
+
+Code at https://github.com/Swirrl/ogc-api-prototype/tree/main/demo
 
