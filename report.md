@@ -32,25 +32,13 @@ How best to link from one data collection to another was another aspect of the r
 
 The main objective of the work was to investigate how the OGC API, perhaps with extensions, could contribute to improving the interoperability of spatial and linked data.
 
-Typically those familiar with spatial data standards and tools have been a separate community to those familiar with Linked Data and RDF based tools. Many of the spatial data tools have been heavily map based, for obvious reasons, and work in terms of 'layers' rather than individual features.  The OGC API - Features is a significant step forward to aligning the two approaches.  While building on existing spatial data formats such as Geojson and GML, it takes a REST style approach consistent with mainstream design of web APIs and has a resource-centric approach that aligns with the key concepts of Linked Data.
+In the context of the Environment Agency's data, much of it is already available and managed as RDF and used to support a range of data access applications. The ability to access this data via the OGC API Features would be a valuable addition to the options available to users but ideally this would be achieved without adding to the burden of data management.  If the OGC API Features could be provided from the same data sources that support the existing Linked Data applications, then that would avoid adding to the data update processes and reduces the risk of different data access options becoming inconsistent or 'out of sync'.
 
-It fits naturally with the idea of providing a machine readable description of a spatial thing ( a 'resource' in the language of web architecture).  This is inherent in the Linked Data approach to representing and disseminating data and the OGC API could be seen as one more alternative format to representing data about a resource.
+So our first objective was to investigate how we could support the OGC API Features on top of existing RDF databases.
 
-At the heart of Linked Data is of course the importance of links between items.  Many of the properties of a thing are expressed as a relationship between that  and some other thing, where all things of interest are assigned URIs as identifiers.
+At the heart of Linked Data is of course the importance of links between items.  Many of the properties of a thing are expressed as a relationship between that  and some other thing, where all things of interest are assigned URIs as identifiers.  A secondary objective was to see how these linking aspects could be supported using the OGC API Features.
 
-
-Investigate how to add aspects of Linked Data to OGC API Features
-Test how JSON-LD can help enable this
-Demonstrate how the Features API can be an additional access option for linked data.
-
-https://datatracker.ietf.org/doc/html/rfc5988
-
-# Implementing the OGC API Features with RDF and Geosparql
-
-Description of technology used and technical approach
-
-Geosparql queries
-
+One option for a possible extension to the standard API would be to use [JSON-LD](https://www.w3.org/TR/json-ld11/) instead of the standard (Geo)JSON responses.  JSON-LD is a JSON-based format for representing linked data. If this could be used to provide a data representation that satisfies the OGC API Features specification and works with clients, but can provide additional detail about a resource for those who want it, then that could potentially be a powerful approach.  An objective of the work was to investigate this possibility.
 
 
 
@@ -64,22 +52,38 @@ The datasets are available to download as compressed n-triples files from an Ama
 
 This dataset contains monitoring sites where samples are taken to assess the population of invertebrates, diatoms and macrophytes. (These are managed in an Environment Agency system called 'Biosys'). The monitoring sites and associated data can be explored via a [web application](https://environment.data.gov.uk/ecology/explorer/).
 
-Each monitoring site has a point geometry.
+Each monitoring site has a point geometry.  Each monitoring site is associated with a Water Body, one of the other collections of data selected for testing.
 
 [Download](https://swirrl-ogc-api-test-data.s3.eu-west-2.amazonaws.com/biosys-sites.nt.gz)
 
 
 ## Embankments
 
+These represent flood defence embankments,  a subset of a larger dataset of flood defence assets managed by the Environment Agency.  These have a line geometry.
+
+There is an interactive application for exploring and viewing the collection of flood defence assets at https://environment.data.gov.uk/asset-management/index.html.  Also individual assets have their own web page (eg https://environment.data.gov.uk/asset-management/id/asset/110912 and various machine-readable representations of their RDF description, eg https://environment.data.gov.uk/asset-management/id/asset/110912.ttl)
+
 [Download](https://swirrl-ogc-api-test-data.s3.eu-west-2.amazonaws.com/embankments.nt.gz)
 
 ## Water bodies
+
+Water bodies are a set of polygons used for monitoring, managing and reporting on the state of the countries water environment. Each has a polygon geometry.  The water bodies are a way of breaking down physical catchment areas into smaller units.
 
 [Download](https://swirrl-ogc-api-test-data.s3.eu-west-2.amazonaws.com/waterbodies.nt.gz)
 
 ## Local authorities
 
+This collection is the set of local government districts in England. Some of the responsibilities for environmental management and flood defence fall to local authorities and a common use case is the need to break down national datasets by local authority.  Each has a polygon or multi-polygon geometry.
+
 [Download](https://swirrl-ogc-api-test-data.s3.eu-west-2.amazonaws.com/local-authorities.nt.gz)
+
+
+# Implementing the OGC API Features with RDF and Geosparql
+
+Description of technology used and technical approach
+
+Geosparql queries
+
 
 
 # Linked Data and the OGC API Features
