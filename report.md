@@ -92,6 +92,7 @@ We tested a range of triple stores with implementations of Geosparql and settled
 
 A GeoSPARQL query was written for each collection, selecting items according to their `rdf:type` and returning the properties of items in that collection to be returned in the API response.  The spatial function `<http://jena.apache.org/spatial#intersectsBox>` was used to select items within a bounding box.  The query templates for each of the four selected data collections can be seen in the source code [here](https://github.com/Swirrl/ogc-api-prototype/tree/main/src/ogc_api/data/queries).  Currently only a small representative subset of all properties of each item are retrieved and included in the API responses but it would be trivial to extend this to return a larger or fully comprehensive version of the data.
 
+The full source code for the implementation is available from https://github.com/Swirrl/ogc-api-prototype and includes basic instructions on how to install and run the code. 
 
 
 # Linked Data and the OGC API Features
@@ -136,19 +137,27 @@ And for the specific question of how to relate the API response for a particular
 
 ## Related items
 
+The other key aspect of linking is to link one item to other related items.  There is already a `rel: collection` link in the standard API response, relating an item to the collection that contains it.  But in the description of an item we often find that it is useful to provide further links.
+
+Explicit representation of geographical hierarchy or containment relationships are often useful. Although these can be computed from geospatial analysis of the geometry of different features, knowing for example that a monitoring site is within a particular water body, or a flood defence asset is in a particular local authority allow for easy and more efficient filtering of data to answer common questions.  
+
+Another common example is relating an item to organisational information: which organisation is responsible for maintaining a flood defence for example.  
+
+Event-related data is another widely occurring example.  The broader data collections from which our examples are drawn also include sets of measurements made at monitoring sites - where some set of observations of properties of interest are recorded at a particular time.  The flood defence assets are related to series of maintenance activities that have been carried out in the past or are planned in the future.  It does not generally make sense to try to represent all this information directly as properties of the spatial thing, but rather to link to other resources that can organise the relevant information in an easy to access way. 
+
+Not all types of data are appropriate for representation in the OGC API Features.  If there is no spatial element to a resource then it probably does not make sense to use the Features API.  Or if the focus is on retrieving subsets of observation data, then other APIs may be more appropriate.
+
+The OGC Environmental Data Retrieval API is closely related to the Features API and may be a good solution in the case of collections of observation or sampling data.
+
+Whether or not the related item is available in a Features API collection, there are two main options for managing the link information: either in the links section of the API response or as the value for a particular property.
+
+A limitation of the links section is the need to use an IANA standard relationship type.  For this case the `related` property is probably the most appropriate, but provides very little information on the nature of the relationship.  
+
+Including the link to an external item as the value of a property is much more flexible.  The pure JSON approach means that these properties are named just using strings and some external documentation may be needed to fully define what they mean.  A potential advantage of the JSON-LD option described above is that properties can be associated with URIs so that the mechanisms of the RDF set of standards can be used for defining individual terms and their broader data models.
+
+In our proof of concept implementation we have experimented with both approaches to linking to other items.  Our preferred approach is to use the value of a property in the main API response.
 
 
-Making links - examples of why it's useful.  Use cases based on the selected test data
-
-Different views of data for different user groups and applications
-
-Options for technical approaches to those links
-
-Relationship between API URLs and the identifiers for features
-
-Role of JSON-LD
-
-Limitations of the IANA registry of 'rel' types - defining the meaning of a particular term.  RDF provides a mechanism for a very flexible language of property types and a standardised way of defining what they mean.  There is also an ecosystem of standardised data models and associated vocabularies of terms that can be re-used in commonly occurring situations.  
 
 # Hosted endpoint
 
@@ -186,19 +195,24 @@ The source code for the demo application can be seen at: https://github.com/Swir
 
 # Further work
 
-full compliance with spec and passing everything in test suite
-more on JSON-LD
-more general approach to configuration - mapping the RDF representation to the Features json representation
+This report describes work that was carried out in a relatively short research project, so limiting the amount of work that could be done and raising many questions that could benefit from further investigation.  Some specific items which we intend to investigate after the end of the project include:
+
+* further refining the API implementation to achieve full compliance with the validation test suite
+* implementing examples of JSON-LD contexts to test our assumptions about it
+* updating RDF representations of data to link to the OGC API as another useful option for data access
+* implementing a more general approach to configuring a new collection, so that it can be added via a configuration file rather than requiring recompilation of the API code.
+
 
 
 # Conclusions
 
-useful
+Our main conclusions from the work are:
 
-fairly easy to build.
+* for a collection of Linked Data with a spatial aspect, the OGC API Features offers an additional mode of access that is easy to use and compatible with existing map and GIS tools
+* it was relatively straightforward to implement a version of the API that runs directly from the triple store where the Linked Data was already stored, using the open standard SPARQL query language with GeoSPARQL extensions.
+* Both the OGC API Features and RDF have their strengths - the most valuable option for users is to provide both, making connections between the two views of the data where appropriate.
+* We considered a JSON-LD based approach which would in effect combine the OGC API and the RDF versions of data into a single response.  This has some potential that merits further investigation, but our initial conclusion is that rather than trying to have one solution that does everything, it may be easier for users to offer both approaches, providing consistent and compatible results but in different formats and with different querying options, and let users decide which is best suited to their application and toolset.
 
-plays nicely with linked data as is.  Relatively easy to provide as another option for accessing collections of linked data that have a strong spatial element.
 
-possible useful extensions but for practical purposes, prob good to keep it simple
 
 
