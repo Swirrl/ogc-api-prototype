@@ -80,13 +80,42 @@ This collection is the set of local government districts in England. Some of the
 
 # Implementing the OGC API Features with RDF and Geosparql
 
-Description of technology used and technical approach
+The existing applications that make use of the test data require it to be accessible via SPARQL and the data is managed in a 'triple store' database.  
 
-Geosparql queries
+Our basic approach to implementing the OGC API was to write SPARQL queries that retrieved the necessary data, then format that into OGC-compliant API responses using a web application, written in the Clojure programming language.
+
+Retrieving features within a bounding box is an important method of the Features API. To implement this we used the [GeoSPARQL functions](https://www.ogc.org/standards/geosparql) that the OGC defined to add a spatial data querying capability to SPARQL.
+
+The geometries of items in the test data was already represented using the [GeoSPARQL ontology](https://opengeospatial.github.io/ogc-geosparql/geosparql11/index.html) and so was already in the structure expected by GeoSPARQL queries.
+
+We tested a range of triple stores with implementations of Geosparql and settled on [GeoSPARQL Fuseki](https://jena.apache.org/documentation/geosparql/geosparql-fuseki), part of the Apache Jena project.  GeoSPARQL Fuseki and Apache Jena are open source, which meant that together with this open source implementation of the OGC API meant that the entire software stack could be open source.  Also, GeoSPARQL Fuseki has a [GeoSPARQL implementation](https://jena.apache.org/documentation/geosparql/) that is complete and compliant with the GeoSPARQL standard.  Also it is easy to install and configure, and initial testing showed that it's performance was satisfactory with the sizes of test datasets we were using.
+
+A GeoSPARQL query was written for each collection, selecting items according to their `rdf:type` and returning the properties of items in that collection to be returned in the API response.  The spatial function `<http://jena.apache.org/spatial#intersectsBox>` was used to select items within a bounding box.  The query templates for each of the four selected data collections can be seen in the source code [here](https://github.com/Swirrl/ogc-api-prototype/tree/main/src/ogc_api/data/queries).
 
 
 
 # Linked Data and the OGC API Features
+
+In the context of providing useful access to multiple collections of data through multiple access methods or formats, there are typically two main kinds of link which is useful to make:
+
+* to alternative views or representations of the same item
+* to related data items
+
+In our context, we are interested in two main representations of data items: the OGC API Features view and the RDF view (or potentially a page of a web application designed to give a user-friendly presentation of the RDF version of the data).
+
+Because the data we are using is represented as RDF, each item of interest has an identifier in the form of a URI.  In general this will be different to the URL of the OGC API method to return data about that item.  In our test data for example, the embankment with URI `http://environment.data.gov.uk/asset-management/id/asset/110912` is available through the API as `https://geonovum-staging.publishmydata.com/collections/Embankment/items/110912`.
+
+The conventions of Linked Data mean that it is possible to directly dereference the identifier of the item to get information about it.  This dereferencing supports content negotiation so you can ask for it in different formats, for example as a web page: `https://environment.data.gov.uk/asset-management/id/asset/110912.html` or in Turtle format: `https://environment.data.gov.uk/asset-management/id/asset/110912.ttl`.
+
+In this case there is also an option to view this asset in the context of a web application designed for exploring the whole collection of flood defence assets:
+
+[https://environment.data.gov.uk/asset-management/index.html?element=http%3A%2F%2Fenvironment.data.gov.uk%2Fasset-management%2Fid%2Fasset%2F110912](https://environment.data.gov.uk/asset-management/index.html?element=http%3A%2F%2Fenvironment.data.gov.uk%2Fasset-management%2Fid%2Fasset%2F110912).
+
+In general we want to support users in discovering and using the various options available.  It would be straightforward to add another property to the RDF representation of the data that links to the OGC API URL for the corresponding item, using some appropriate RDF property - that could be something generic such as `rdfs:seeAlso` but it would probably be more informative to coin a new specific property to be clear that it is linking to an OGC API Features version of the item.
+
+When linking from the OGC API Features representation to the RDF representation, there are a number of options. 
+
+
 
 Making links - examples of why it's useful.  Use cases based on the selected test data
 
@@ -112,7 +141,7 @@ https://geonovum-staging.publishmydata.com/
 
 The API has been tested against the [OGC API - Features Conformance Test Suite](https://cite.ogc.org/teamengine/about/ogcapi-features-1.0/1.0/site/).  The most important tests pass but there are still some test failures with the current state of the implementation.
 
-TODO: confirm which tests from the OGC test suite still fail.
+TODO: check and document which tests from the OGC test suite still fail.
 
 The demo application (described below) uses Leaflet, building on the simple example client available at https://github.com/opengeospatial/ogcapi-features/blob/master/implementations/clients/leaflet.md. It shows that the API responses can be correctly interpreted by a library expecting geojson.
 
@@ -132,9 +161,7 @@ As well as demonstrating how the API can be called and the results displayed, th
 
 Clicking on a feature on the map brings up a pop-up with a link to the OGC API item and in some cases a link to another related item, whether part of another collection in the API endpoint (for example the Biosys monitoring sites link to the waterbody that contains them) or to an external link (the waterbodies on the map link to an external web page about the catchment they form part of).
 
-
-
-Code at https://github.com/Swirrl/ogc-api-prototype/tree/main/demo
+The source code for the demo application can be seen at: https://github.com/Swirrl/ogc-api-prototype/tree/main/demo
 
 # Further work
 
@@ -146,6 +173,8 @@ more general approach to configuration - mapping the RDF representation to the F
 # Conclusions
 
 useful
+
+fairly easy to build.
 
 plays nicely with linked data as is.  Relatively easy to provide as another option for accessing collections of linked data that have a strong spatial element.
 
