@@ -11,7 +11,7 @@ combination with geodata in JSON, and the added value of the output.
 
 Swirrl's approach to this task was influenced by the kind of work the company carries out for government organisations, addressing a range of data integration and data dissemination challenges.  Data analysis in government often involves comparing and connecting data from different sources, typically from different departments of a large organisation or from separate organisations.  Typical ‘enterprise’ approaches to data integration are often unsuitable when working across organisation boundaries in this way.
 
-This has led Swirrl to apply the Linked Data approach, exploiting web standards and the globally-scoped identifiers that are typically used in RDF and Linked Data.
+This has led Swirrl to apply the Linked Data approach, exploiting web standards and the globally-scoped identifiers that are typically used in RDF and Linked Data.  For background to what Linked Data involves, see Tim Berners-Lee's [original note](https://www.w3.org/DesignIssues/LinkedData.html) and the [W3C summary page](https://www.w3.org/standards/semanticweb/data). 
 
 Often spatial data is an important element of these data integration and data analysis activities and there is a need to combine spatial and non-spatial data to get a complete picture.  In the past GIS systems and GIS specialists have operated largely independently of web-based data and that group of specialists.  While GIS systems can hold non-spatial properties of ‘spatial things’ and linked data can hold spatial data about the ‘resources’ of interest, each approach has its own strengths and weaknesses and so the best approach to data management and exploitation involved elements of both.  Finding ways to bring together these two communities of users was one of the main objectives of the OGC/W3C Spatial Data on the Web Working Group.
 
@@ -28,11 +28,16 @@ Many of the existing applications that Swirrl operates for the EA are based arou
 How best to link from one data collection to another was another aspect of the research: whether using existing aspects of Features API or enhancing the responses with JSON-LD.
 
 
-
-
 # Objectives
 
+The main objective of the work was to investigate how the OGC API, perhaps with extensions, could contribute to improving the interoperability of spatial and linked data.
 
+
+Investigate how to add aspects of Linked Data to OGC API Features
+Test how JSON-LD can help enable this
+Demonstrate how the Features API can be an additional access option for linked data.
+
+https://datatracker.ietf.org/doc/html/rfc5988
 
 # Implementing the OGC API Features with RDF and Geosparql
 
@@ -47,7 +52,7 @@ Geosparql queries
 
 Four datasets were selected from data created by the English Environment Agency to test the approach and provide real use cases for linking data together.
 
-The datasets are available to download as compressed n-triples files from an Amazon S3 bucket:
+The datasets are available to download as compressed n-triples files from an Amazon S3 bucket: s3://swirrl-ogc-api-test-data/
 
 ## Ecology monitoring sites
 
@@ -85,11 +90,19 @@ Role of JSON-LD
 
 # Hosted endpoint
 
+The API implementation and test data is hosted at: 
+
 https://geonovum-staging.publishmydata.com/
+
+(Note that a browser extension that formats JSON in a more readable way makes it easier to view and understand the API responses: for example this one for Chrome: https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa)
 
 # Testing and compliance
 
-OGC test suite - which tests still fail?
+The API has been tested against the [OGC API - Features Conformance Test Suite](https://cite.ogc.org/teamengine/about/ogcapi-features-1.0/1.0/site/).  The most important tests pass but there are still some tests failures with the current state of the implementation.
+
+TODO: confirm which tests from the OGC test suite still fail.
+
+
 
 Using it with Mapbox
 
@@ -102,4 +115,13 @@ Using it with QGIS
 https://geonovum-staging.publishmydata.com/demo/map.html
 
 Code at https://github.com/Swirrl/ogc-api-prototype/tree/main/demo
+
+# Further work
+
+full compliance with spec and passing everything in test suite
+more on JSON-LD
+more general approach to configuration - mapping the RDF representation to the Features json representation
+
+
+# Conclusions
 
