@@ -90,7 +90,7 @@ The geometries of items in the test data was already represented using the [GeoS
 
 We tested a range of triple stores with implementations of Geosparql and settled on [GeoSPARQL Fuseki](https://jena.apache.org/documentation/geosparql/geosparql-fuseki), part of the Apache Jena project.  GeoSPARQL Fuseki and Apache Jena are open source, which meant that together with this open source implementation of the OGC API meant that the entire software stack could be open source.  Also, GeoSPARQL Fuseki has a [GeoSPARQL implementation](https://jena.apache.org/documentation/geosparql/) that is complete and compliant with the GeoSPARQL standard.  Also it is easy to install and configure, and initial testing showed that it's performance was satisfactory with the sizes of test datasets we were using.
 
-A GeoSPARQL query was written for each collection, selecting items according to their `rdf:type` and returning the properties of items in that collection to be returned in the API response.  The spatial function `<http://jena.apache.org/spatial#intersectsBox>` was used to select items within a bounding box.  The query templates for each of the four selected data collections can be seen in the source code [here](https://github.com/Swirrl/ogc-api-prototype/tree/main/src/ogc_api/data/queries).
+A GeoSPARQL query was written for each collection, selecting items according to their `rdf:type` and returning the properties of items in that collection to be returned in the API response.  The spatial function `<http://jena.apache.org/spatial#intersectsBox>` was used to select items within a bounding box.  The query templates for each of the four selected data collections can be seen in the source code [here](https://github.com/Swirrl/ogc-api-prototype/tree/main/src/ogc_api/data/queries).  Currently only a small representative subset of all properties of each item are retrieved and included in the API responses but it would be trivial to extend this to return a larger or fully comprehensive version of the data.
 
 
 
@@ -123,8 +123,15 @@ Given that each item in the API typically corresponds to a Spatial Thing, in our
 
 Another possibility would be to include the URI of the item as the value of one of the properties returned in the item description.  There is already an `id` property that refers to the {featureId} section of the API URL pattern `https://{domain}/collections/{collectionId}/items/{featureId}` , so some other property would be required.  It would be preferable if a convention or standard could be established for a consistent property to be used for this purpose, but any obviously named property could serve the purpose.
 
---- potential for JSON-LD here, but disadvantages of mixing up RDF and OGC ----
+This is one area where JSON-LD has built in facilities which could be used. Adding a @context element to the OGC API responses would allow the use of JSON-LD to add richer information to the response. However updating the OGC API to use JSON-LD rather than just JSON has some significant implications that have pros and cons.  JSON-LD is a JSON-compatible syntax for RDF, so by making the OGC API responses JSON-LD, it becomes an RDF API, even if it is possible for clients to interpret it as regular JSON and choose to ignore the extra information provided. 
 
+Getting the benefit of the extra RDF information requires client software or developers to be able to process and use the RDF.  There are potential benefits in having a single API response that can be interpreted as OGC API Features compliant and also be interpretable as RDF - one API could serve a broader range of interests. There are likely to be some situations where the compatibility breaks down but we have not yet investigated deeply enough to identify specific problems.
+
+However in our situation, we already have options for providing data as RDF, so using the OGC API to deliver RDF responses is duplicating something that is already available.  We want to support a broader range of users and applications by providing the OGC API Features, and we want users to be aware of and easily discover connections from one view of the data to another.  But that does not mean that one single API implementation has to solve all use cases.
+
+Our current view is that it is better to have separate access options, each optimised for a particular set of users, but all working on a common set of underlying data.  That way the data management is efficient and reliable but we can deliver access the data in a wide variety of ways to suit different use cases. 
+
+And for the specific question of how to relate the API response for a particular item to the RDF representation of it, our preferred approach is to use the links section of the API response and have a `rel: about` link which provides the URI of the resource which is described by the API response.
 
 
 ## Related items
