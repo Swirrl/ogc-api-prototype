@@ -32,6 +32,12 @@ How best to link from one data collection to another was another aspect of the r
 
 The main objective of the work was to investigate how the OGC API, perhaps with extensions, could contribute to improving the interoperability of spatial and linked data.
 
+Typically those familiar with spatial data standards and tools have been a separate community to those familiar with Linked Data and RDF based tools. Many of the spatial data tools have been heavily map based, for obvious reasons, and work in terms of 'layers' rather than individual features.  The OGC API - Features is a significant step forward to aligning the two approaches.  While building on existing spatial data formats such as Geojson and GML, it takes a REST style approach consistent with mainstream design of web APIs and has a resource-centric approach that aligns with the key concepts of Linked Data.
+
+It fits naturally with the idea of providing a machine readable description of a spatial thing ( a 'resource' in the language of web architecture).  This is inherent in the Linked Data approach to representing and disseminating data and the OGC API could be seen as one more alternative format to representing data about a resource.
+
+At the heart of Linked Data is of course the importance of links between items.  Many of the properties of a thing are expressed as a relationship between that  and some other thing, where all things of interest are assigned URIs as identifiers.
+
 
 Investigate how to add aspects of Linked Data to OGC API Features
 Test how JSON-LD can help enable this
@@ -88,6 +94,8 @@ Relationship between API URLs and the identifiers for features
 
 Role of JSON-LD
 
+Limitations of the IANA registry of 'rel' types - defining the meaning of a particular term.  RDF provides a mechanism for a very flexible language of property types and a standardised way of defining what they mean.  There is also an ecosystem of standardised data models and associated vocabularies of terms that can be re-used in commonly occurring situations.  
+
 # Hosted endpoint
 
 The API implementation and test data is hosted at: 
@@ -98,21 +106,29 @@ https://geonovum-staging.publishmydata.com/
 
 # Testing and compliance
 
-The API has been tested against the [OGC API - Features Conformance Test Suite](https://cite.ogc.org/teamengine/about/ogcapi-features-1.0/1.0/site/).  The most important tests pass but there are still some tests failures with the current state of the implementation.
+The API has been tested against the [OGC API - Features Conformance Test Suite](https://cite.ogc.org/teamengine/about/ogcapi-features-1.0/1.0/site/).  The most important tests pass but there are still some test failures with the current state of the implementation.
 
 TODO: confirm which tests from the OGC test suite still fail.
 
+The demo application (described below) uses Leaflet, building on the simple example client available at https://github.com/opengeospatial/ogcapi-features/blob/master/implementations/clients/leaflet.md. It shows that the API responses can be correctly interpreted by a library expecting geojson.
 
-
-Using it with Mapbox
-
-Using it with QGIS
+We have also successfully tested the API with QGIS, using the QGIS feature to import a layer from an OGC API Features endpoint - see https://docs.qgis.org/3.16/en/docs/user_manual/working_with_ogc/ogc_client_support.html#wfs-and-wfs-t-client .
 
 
 
 # Example application
 
+We have developed a simple web application that makes calls to the API and displays the results on a web map, using the Leaflet.js library.  The demo is hosted at:
+
 https://geonovum-staging.publishmydata.com/demo/map.html
+
+It uses the bbox method to retrieve the data contained in the current viewport of the map.  It is currently set to retrieve a maximum of 100 features from a collection within the bounding box, to avoid attempting to load too much data into the browser, so when the map is fully zoomed out, only a subset of features are drawn. (Trying to draw all features from some collections can lead to the browser running out of memory).
+
+As well as demonstrating how the API can be called and the results displayed, the application provides a simple illustration of the approach to linking that we have been investigating.
+
+Clicking on a feature on the map brings up a pop-up with a link to the OGC API item and in some cases a link to another related item, whether part of another collection in the API endpoint (for example the Biosys monitoring sites link to the waterbody that contains them) or to an external link (the waterbodies on the map link to an external web page about the catchment they form part of).
+
+
 
 Code at https://github.com/Swirrl/ogc-api-prototype/tree/main/demo
 
@@ -124,4 +140,11 @@ more general approach to configuration - mapping the RDF representation to the F
 
 
 # Conclusions
+
+useful
+
+plays nicely with linked data as is.  Relatively easy to provide as another option for accessing collections of linked data that have a strong spatial element.
+
+possible useful extensions but for practical purposes, prob good to keep it simple
+
 
