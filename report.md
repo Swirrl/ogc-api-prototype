@@ -101,6 +101,8 @@ In the context of providing useful access to multiple collections of data throug
 * to alternative views or representations of the same item
 * to related data items
 
+## Alternative representations
+
 In our context, we are interested in two main representations of data items: the OGC API Features view and the RDF view (or potentially a page of a web application designed to give a user-friendly presentation of the RDF version of the data).
 
 Because the data we are using is represented as RDF, each item of interest has an identifier in the form of a URI.  In general this will be different to the URL of the OGC API method to return data about that item.  In our test data for example, the embankment with URI `http://environment.data.gov.uk/asset-management/id/asset/110912` is available through the API as `https://geonovum-staging.publishmydata.com/collections/Embankment/items/110912`.
@@ -114,6 +116,18 @@ In this case there is also an option to view this asset in the context of a web 
 In general we want to support users in discovering and using the various options available.  It would be straightforward to add another property to the RDF representation of the data that links to the OGC API URL for the corresponding item, using some appropriate RDF property - that could be something generic such as `rdfs:seeAlso` but it would probably be more informative to coin a new specific property to be clear that it is linking to an OGC API Features version of the item.
 
 When linking from the OGC API Features representation to the RDF representation, there are a number of options. 
+
+The OGC API Features standard includes a `links` element based on HTTP Link Headers and using the [IANA registry of link types](https://www.iana.org/assignments/link-relations/link-relations.xhtml).  
+
+Given that each item in the API typically corresponds to a Spatial Thing, in our case with a persistent globally scoped identifier in the form of a URI, we could use the `about` relation in the links section to provide the URI of the item in question.  (One question to investigate here is that the OGC spec requires the inclusion of a `type` for each link, corresponding to the HTTP content-type.  The RDF identifier of a resource is typically agnostic about content-type and multiple representations are often available. A pragmatic solution could be to link to a particular representation of the RDF identifier, eg the HTML version or a JSON-LD version and use a matching content-type).
+
+Another possibility would be to include the URI of the item as the value of one of the properties returned in the item description.  There is already an `id` property that refers to the {featureId} section of the API URL pattern `https://{domain}/collections/{collectionId}/items/{featureId}` , so some other property would be required.  It would be preferable if a convention or standard could be established for a consistent property to be used for this purpose, but any obviously named property could serve the purpose.
+
+--- potential for JSON-LD here, but disadvantages of mixing up RDF and OGC ----
+
+
+
+## Related items
 
 
 
