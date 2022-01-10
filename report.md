@@ -163,7 +163,7 @@ In our proof of concept implementation we have experimented with both approaches
 
 The API implementation and test data is hosted at: 
 
-https://geonovum-staging.publishmydata.com/
+https://geonovum.publishmydata.com/
 
 (Note that a browser extension that formats JSON in a more readable way makes it easier to view and understand the API responses: for example this one for Chrome: https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa)
 
@@ -183,7 +183,7 @@ We have also successfully tested the API with QGIS, using the QGIS feature to im
 
 We have developed a simple web application that makes calls to the API and displays the results on a web map, using the Leaflet.js library.  The demo is hosted at:
 
-https://geonovum-staging.publishmydata.com/demo/map.html
+https://geonovum.publishmydata.com/demo/map.html
 
 It uses the bbox method to retrieve the data contained in the current viewport of the map.  It is currently set to retrieve a maximum of 100 features from a collection within the bounding box, to avoid attempting to load too much data into the browser, so when the map is fully zoomed out, only a subset of features are drawn. (Trying to draw all features from some collections can lead to the browser running out of memory).
 
