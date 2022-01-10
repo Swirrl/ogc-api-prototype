@@ -38,6 +38,15 @@
      ::exception/default (constantly
                           (ru/error-response 500 "Sorry, there was an unexpected error"))})))
 
+(def add-content-crs
+  {:name ::content-crs
+   :description "Add Content-Crs header (coordinate reference system for response coordinates)"
+   :wrap (fn [handler]
+           (fn [req]
+             (assoc-in (handler req)
+                       [:headers "Content-Crs"]
+                       "http://www.opengis.net/def/crs/OGC/1.3/CRS84")))})
+
 (defmethod ig/init-key :ogc-api.concerns.reitit/router [_ {:keys [data opts]}]
   (ring/router data (mm/meta-merge
                      {:data {:coercion mc/coercion
@@ -49,6 +58,7 @@
                                           ; exception-middleware ;; exception handling
                                           muuntaja/format-request-middleware ;; decoding request body
                                           coercion/coerce-response-middleware ;; coercing response bodies
+                                          add-content-crs
                                           coercion/coerce-request-middleware ;; coercing request parameters
                                           multipart/multipart-middleware ;; multipart
                                           ]}}
