@@ -55,7 +55,7 @@
                                           content-type/wrap-content-type
                                           muuntaja/format-negotiate-middleware ;; content-negotiation
                                           muuntaja/format-response-middleware ;; encoding response body
-                                          ; exception-middleware ;; exception handling
+                                          exception-middleware ;; exception handling
                                           muuntaja/format-request-middleware ;; decoding request body
                                           coercion/coerce-response-middleware ;; coercing response bodies
                                           add-content-crs
