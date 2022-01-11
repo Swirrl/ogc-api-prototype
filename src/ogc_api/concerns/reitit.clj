@@ -45,7 +45,7 @@
            (fn [req]
              (assoc-in (handler req)
                        [:headers "Content-Crs"]
-                       "http://www.opengis.net/def/crs/OGC/1.3/CRS84")))})
+                       "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>")))})
 
 (defmethod ig/init-key :ogc-api.concerns.reitit/router [_ {:keys [data opts]}]
   (ring/router data (mm/meta-merge
