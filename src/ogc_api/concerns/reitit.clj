@@ -47,6 +47,20 @@
                        [:headers "Content-Crs"]
                        "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>")))})
 
+(defn- link-header-value [{:keys [rel type href]}]
+  (str "<" href ">; rel=\"" rel "\"; type=\"" type "\""))
+
+(def add-link-headers
+  {:name ::link-headers
+   :description "Add Link: headers whenever there are toplevel links in response data"
+   :wrap
+   (fn [handler]
+     (fn [req]
+       (let [res (handler req)]
+         (if-let [links (-> res :body :links)]
+           (assoc-in res [:headers "Link"] (vec (map link-header-value links)))
+           res))))})
+
 (defmethod ig/init-key :ogc-api.concerns.reitit/router [_ {:keys [data opts]}]
   (ring/router data (mm/meta-merge
                      {:data {:coercion mc/coercion
@@ -61,6 +75,7 @@
                                           add-content-crs
                                           coercion/coerce-request-middleware ;; coercing request parameters
                                           multipart/multipart-middleware ;; multipart
+                                          add-link-headers
                                           ]}}
                      opts)))
 
