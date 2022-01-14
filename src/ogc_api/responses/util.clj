@@ -2,8 +2,7 @@
   (:require
     [clojure.string :as str]
     [clojure.data.json :as json]
-    [ring.util.response :as rr]
-    [ogc-api.data.util.conversions :as conv]))
+    [ring.util.response :as rr]))
 
 (defn error-response [status message]
   {:status status
