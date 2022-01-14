@@ -10,9 +10,6 @@
    :headers {"Content-Type" "application/json; charset=utf-8"}
    :body (json/write-str {:code status :description message})})
 
-(defn map-ids [coll]
-  (map conv/uri->id coll))
-
 (def license-link
   {:href "https://placeholder.license.url"
    :rel "license"
