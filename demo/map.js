@@ -49,7 +49,7 @@ function linkHtml(link) {
         && !(['self', 'collection'].includes(link.rel))) {
         return `<input type=button
             onclick='showLocation("${link.href}")'
-            value="Show ${link.rel}" />`;
+            value="Show ${link.title || link.rel}" />`;
     }
 }
 

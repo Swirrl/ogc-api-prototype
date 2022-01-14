@@ -30,10 +30,12 @@
   (concat
     (keep identity
           (map
-            (fn [[field {:keys [collection]}]]
+            (fn [[field {:keys [collection rel title type]}]]
               (if-let [ref-id (-> item :properties field)]
                 (ru/link [base-uri "collections" collection "items" ref-id]
-                         {:type :geojson :rel (name field)})))
+                         {:type (or type :geojson)
+                          :title title
+                          :rel (or rel (name field))})))
             property-links))
     [(ru/link [base-uri "collections" collection-id "items" (:id item)]
               {:type :geojson :rel "self"})

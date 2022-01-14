@@ -20,13 +20,15 @@
   {:json "application/json"
    :geojson "application/geo+json"})
 
-(defn link [path {:keys [type rel query]}]
-  {:href
-   (let [base (str/join "/" path)]
-     (if (empty? query) base
-       (str base "?" (str/join "&" (map (fn [[k v]] (str k "=" v)) query)))))
-   :rel rel
-   :type (or (data-types (or type :json)) type)})
+(defn link [path {:keys [type rel query title]}]
+  (cond->
+    {:href
+     (let [base (str/join "/" path)]
+       (if (empty? query) base
+         (str base "?" (str/join "&" (map (fn [[k v]] (str k "=" v)) query)))))
+     :rel rel
+     :type (or (data-types (or type :json)) type)}
+    title (assoc :title title)))
 
 (defn add-license-link-to-response [partial-resp]
   (update-in partial-resp [:links] conj license-link))
