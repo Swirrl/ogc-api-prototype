@@ -1,15 +1,3 @@
 {:dev/http-pretty-exception    {}
  :dev/http-print-request-diffs {}
-
- ;:ogc-api.concerns.reitit/router {:opts {}}
- :ogc-api.concerns.reitit/router {:opts {}}
- ; {:exception #ig/ref :dev/http-pretty-exception
- ;                                                    :reitit.middleware/transform #ig/ref :dev/http-print-request-diffs}}
-
- :ogc-api.concerns/jetty {:opts {:port 3000}}
-
- ;:ogc-api/query-endpoint "http://localhost:5820/ogc-test/query"
- :ogc-api/query-endpoint "http://localhost:3030/ds"
-
- :ogc-api/base-uri "http://localhost:3000"
  }

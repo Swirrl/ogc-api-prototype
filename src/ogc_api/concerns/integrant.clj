@@ -13,4 +13,10 @@
 (derive :ogc-api/base-uri :ogc-api/const)
 
 (defn env [[env-var default]]
-  (or (System/getenv env-var) default))
+  (let [e (System/getenv env-var)]
+    (if e
+      (if (int? default)
+        (Integer/parseInt e)
+        e)
+      default)))
+

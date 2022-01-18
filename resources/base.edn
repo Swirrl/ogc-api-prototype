@@ -1,4 +1,4 @@
-{:ogc-api.concerns/jetty {:opts {:port 8080 :join? false}
+{:ogc-api.concerns/jetty {:opts {:port #env ["PORT" 3000] :join? false}
                                     :handler #ig/ref :ogc-api.concerns.reitit/ring-handler}
 
  :grafter.db/triplestore {:query-endpoint #ig/ref :ogc-api/query-endpoint}
@@ -7,4 +7,8 @@
                                                   :default-handler #ig/ref :ogc-api.concerns.reitit/default-handler
                                                   :opts {}}
 
+ :ogc-api/base-uri #env ["BASE_URI" "http://localhost:3000"]
+ :ogc-api/query-endpoint #env ["QUERY_ENDPOINT" "http://localhost:3030/ds"]
+
  :ogc-api.concerns.reitit/default-handler {}}
+
