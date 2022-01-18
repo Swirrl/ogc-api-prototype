@@ -51,9 +51,17 @@
  :ogc-api.data.collections/collections
  {"WaterBody" {:id "WaterBody"
                :title "A body of water"
+               :exclude-properties [:uri]
+               :property-links {:uri {:rel "about"
+                                      :type "text/html"
+                                      :title "More information"}}
                :query "ogc_api/data/queries/waterbody-items.sparql"}
   "Embankment" {:id "Embankment"
                 :title "Defence assets"
+                :exclude-properties [:uri]
+                :property-links {:uri {:rel "about"
+                                       :type "text/html"
+                                       :title "More information"}}
                 :query "ogc_api/data/queries/embankment-items.sparql"}
   "BiosysSite" {:id "BiosysSite"
                 :title "Biosys Site"
@@ -64,10 +72,11 @@
                 :query "ogc_api/data/queries/biosyssite-items.sparql"}
   "LocalAuthority" {:id "LocalAuthority"
                     :title "Local Authority"
+                    :exclude-properties [:uri]
+                    :property-links {:uri {:rel "about"
+                                           :type "text/html"
+                                           :title "More information"}}
                     :query "ogc_api/data/queries/localauthority-items.sparql"}}
-  ; "Feature" {:id "Feature"
-  ;            :uri "http://www.opengis.net/ont/geosparql#Feature"
-  ;            :title "OGC Feature"}
 
  :ogc-api.handlers.info/index {:base-uri #ig/ref :ogc-api/base-uri}
  :ogc-api.handlers.info/schema {}

@@ -11,6 +11,7 @@ PREFIX boundary: <http://statistics.data.gov.uk/def/boundary-change/>
 PREFIX measurement: <http://statistics.data.gov.uk/def/measurement#>
 
 select
+    ?uri
     ?id
     (str(?wktgeom) as ?geometry)
     ?title

@@ -50,6 +50,8 @@ function linkHtml(link) {
         return `<input type=button
             onclick='showLocation("${link.href}")'
             value="Show ${link.title || link.rel}" />`;
+    } else if (link.type == 'text/html') {
+        return `<a href="${link.href}" target=_blank>${link.title || link.rel}</a>`;
     }
 }
 

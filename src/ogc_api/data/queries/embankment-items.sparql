@@ -9,6 +9,7 @@ PREFIX asset: <http://environment.data.gov.uk/asset-management/def/core/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 select
+    ?uri
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
@@ -17,7 +18,7 @@ where {
     bind(xsd:dateTime(?datetime_from) as ?dt_from) .
     bind(xsd:dateTime(?datetime_to) as ?dt_to) .
 
-    ?uri a <http://environment.data.gov.uk/asset-management/def/core/Asset> ;
+    ?uri a asset:Asset ;
          skos:notation ?id ;
          rdf:label ?title ;
          geo:hasGeometry ?geom .

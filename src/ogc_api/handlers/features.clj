@@ -25,18 +25,20 @@
    :geometry (-> geometry gio/read-wkt gio/to-geojson json/read-str)
    :properties (dissoc item :id :geometry)})
 
+(defn property-link [base-uri item field {:keys [collection rel title type]}]
+  (if-let [ref-id (-> item :properties field)]
+    (ru/link (if collection
+               [base-uri "collections" collection "items" ref-id]
+               [ref-id])
+             {:type (or type :geojson)
+              :title title
+              :rel (or rel (name field))})))
+
 (defn collection-item-links
   [base-uri property-links collection-id item]
   (concat
     (keep identity
-          (map
-            (fn [[field {:keys [collection rel title type]}]]
-              (if-let [ref-id (-> item :properties field)]
-                (ru/link [base-uri "collections" collection "items" ref-id]
-                         {:type (or type :geojson)
-                          :title title
-                          :rel (or rel (name field))})))
-            property-links))
+          (map #(apply property-link base-uri item %) property-links))
     [(ru/link [base-uri "collections" collection-id "items" (:id item)]
               {:type :geojson :rel "self"})
      (ru/link [base-uri "collections" collection-id]

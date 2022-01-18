@@ -8,6 +8,7 @@ PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
 PREFIX biosys: <http://environment.data.gov.uk/ecology/biosys/def/>
 
 select
+    ?uri
     ?id
     (str(?wktgeom) as ?geometry)
     ?title
